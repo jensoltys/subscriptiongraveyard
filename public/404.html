@@ -1,0 +1,95 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: AGPL-3.0-only | Copyright (C) 2026 the Subscription Graveyard authors. See LICENSE. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Page not found &middot; Subscription Graveyard</title>
+<meta name="description" content="That page isn't here. Head back to your graveyard."/>
+<meta name="robots" content="noindex,follow"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><rect x='4' y='4' width='72' height='72' rx='20' fill='%23FF6B57'/><path d='M24 62V36c0-9 7-16 16-16s16 7 16 16v26z' fill='%23FFF4EF'/><path d='M46 36.5c0-3-2.7-5-6-5s-6 1.8-6 4.4c0 2.7 2.6 3.8 6 4.6 3.4.8 6 1.9 6 4.6 0 2.6-2.7 4.4-6 4.4s-6-2-6-5' stroke='%233A0D07' stroke-width='3.4' stroke-linecap='round' fill='none'/><path d='M40 27v27' stroke='%233A0D07' stroke-width='3.4' stroke-linecap='round'/><rect x='16' y='60' width='48' height='7' rx='3.5' fill='%236EDBA8'/></svg>"/>
+<meta name="theme-color" content="#141113"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#141113;--bg2:#1C1719;
+  --primary:#FF6B57;--primary-d:#E5533F;--primary-ink:#2A0905;--primary-glow:rgba(255,107,87,0.25);
+  --money:#6EDBA8;--money-2:#A6EDCB;--money-glow:rgba(110,219,168,0.3);
+  --accent:#E9DFC9;--lamp:#F2B45A;--reaper:#D63A4A;
+  --text:#F4EDE8;--muted:#B4A7A6;
+  --card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --blood:#FF8F80;
+  --font-head:'Bricolage Grotesque','Avenir Next',system-ui,sans-serif;
+  --font-body:'Figtree','Avenir Next',system-ui,sans-serif;
+}
+button,input,select,textarea{font-family:inherit}
+
+*{margin:0;padding:0;box-sizing:border-box}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px;border-radius:4px}
+html,body{overflow-x:hidden}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;text-align:center;gap:1.5rem}
+/* Same lockup recipe as index.html — see the BRAND LOCKUP block there. */
+.sg-brand{display:flex;width:max-content;align-items:center;gap:.42em;text-decoration:none;padding:6px;margin:-6px}
+.sg-brand svg{display:block;flex:none}
+.sg-word{font-family:var(--font-head);font-weight:700;font-size:1.06rem;line-height:1;display:inline-flex;align-items:baseline;gap:.28em;white-space:nowrap}
+.sg-word-ink{color:var(--text)}
+.sg-word-pop{position:relative;display:inline-block;color:var(--primary)}
+.sg-swoosh{position:absolute;left:0;bottom:-.22em;width:100%;height:.19em;overflow:visible}
+main{display:flex;flex-direction:column;align-items:center;gap:1rem;max-width:460px}
+h1{font-family:var(--font-head);font-weight:700;font-size:clamp(1.5rem,6vw,2.1rem);line-height:1.2;color:var(--text)}
+.code{font-family:var(--font-head);font-weight:700;font-size:.8rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+p{color:var(--muted);font-size:.95rem;line-height:1.65}
+.btn{display:inline-block;margin-top:.5rem;background:linear-gradient(135deg,var(--primary),var(--primary-d));color:#2A0905;
+  font-weight:800;font-size:.95rem;text-decoration:none;padding:.8rem 1.5rem;border-radius:12px;
+  box-shadow:0 8px 24px rgba(110,219,168,0.18)}
+.btn:hover{filter:brightness(1.06)}
+footer{font-size:.78rem;color:var(--muted);display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;align-items:center}
+footer a{color:var(--muted);text-decoration:underline}
+footer a:hover{color:var(--text)}
+footer span{opacity:.8}
+</style>
+</head>
+<body>
+
+<header>
+<a class="sg-brand" href="/" aria-label="Subscription Graveyard home"><svg width="28" height="28" viewBox="0 0 80 80" aria-hidden="true" focusable="false"><rect x="4" y="4" width="72" height="72" rx="20" fill="#FF6B57"/><path d="M24 62V36c0-9 7-16 16-16s16 7 16 16v26z" fill="#FFF4EF"/><path d="M46 36.5c0-3-2.7-5-6-5s-6 1.8-6 4.4c0 2.7 2.6 3.8 6 4.6 3.4.8 6 1.9 6 4.6 0 2.6-2.7 4.4-6 4.4s-6-2-6-5" stroke="#3A0D07" stroke-width="3.4" stroke-linecap="round" fill="none"/><path d="M40 27v27" stroke="#3A0D07" stroke-width="3.4" stroke-linecap="round"/><rect x="16" y="60" width="48" height="7" rx="3.5" fill="#6EDBA8"/></svg><span class="sg-word"><span class="sg-word-ink">Subscription</span><span class="sg-word-pop">Graveyard<svg class="sg-swoosh" viewBox="0 0 92 14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M4 9C24 4 60 4 88 8" stroke="#E9DFC9" stroke-width="6" stroke-linecap="round" fill="none"/></svg></span></span></a>
+</header>
+
+<main>
+  <svg width="112" height="139" viewBox="0 0 200 248" aria-hidden="true" focusable="false">
+    <ellipse cx="100" cy="242" rx="50" ry="6" fill="rgba(0,0,0,.3)"/>
+    <path d="M55 120Q42 165 38 230h124Q158 165 145 120Z" fill="#231A1C"/>
+    <path d="M100 34c-30 0-52 22-52 52 0 20 10 36 24 46v10c0 8 12 14 28 14s28-6 28-14v-10c14-10 24-26 24-46 0-30-22-52-52-52z" fill="#FFF4EF"/>
+    <ellipse cx="82" cy="90" rx="11" ry="12" fill="#fff"/>
+    <ellipse cx="118" cy="90" rx="11" ry="12" fill="#fff"/>
+    <circle cx="82" cy="92" r="6" fill="#6EDBA8"/>
+    <circle cx="118" cy="92" r="6" fill="#6EDBA8"/>
+    <circle cx="83" cy="93" r="3" fill="#141113"/>
+    <circle cx="119" cy="93" r="3" fill="#141113"/>
+    <path d="M88 122Q100 114 112 122" stroke="#B4A7A6" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>
+  <p class="code">Error 404</p>
+  <h1>This plot is empty.</h1>
+  <p>The crypt keeper checked twice. Whatever you were after isn't at this address, so it either moved or never existed.</p>
+  <a class="btn" href="/">Back to my graveyard</a>
+</main>
+
+<footer>
+  <a href="/guide">Guide</a>
+  <span>&middot;</span>
+  <a href="/legal/privacy">Privacy</a>
+  <span>&middot;</span>
+  <a href="/legal/terms">Terms</a>
+  <span>&middot;</span>
+  <a href="/legal/accessibility">Accessibility</a>
+  <span>&middot;</span>
+  <a href="/legal/do-not-sell">Do Not Sell or Share My Info</a>
+      <span>&middot;</span>
+      <a href="https://github.com/jensoltys/subscriptiongraveyard" target="_blank" rel="noopener noreferrer">Open source</a>
+  <p style="flex-basis:100%;text-align:center;margin:.4rem 0 0;font-size:.72rem">Contact <a href="mailto:support@example.com">support@example.com</a> &middot; &copy; <span class="jbi-year">2026</span> YOUR COMPANY NAME &middot; YOUR BUSINESS ADDRESS</p>
+</footer>
+<script src="/footer-year.js" defer></script>
+
+</body>
+</html>

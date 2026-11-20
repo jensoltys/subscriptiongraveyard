@@ -1,0 +1,21 @@
+# Copy to .dev.vars for local dev. Never commit .dev.vars.
+# Required: a random string of 32 or more characters. Sign up and log in stay off
+# until it's set. Make one with: openssl rand -hex 32
+JWT_SECRET=
+# Local testing only: prints signup codes and reset links in the terminal when
+# RESEND_API_KEY is blank. Never set this live.
+DEV_LOG_CODES=true
+# The address you open in the browser. Links in emails and the printed reset link
+# use it, so change the port here if you run wrangler dev on another one.
+APP_URL=http://localhost:8787
+
+# Needed before going live (sends codes, reset links and renewal warnings)
+RESEND_API_KEY=
+
+# Optional extras
+ALERT_TOKEN=
+SIGNUP_WEBHOOK_SECRET=
+# Pro hub secrets: 32 or more characters each, or they count as not set.
+HUB_JWT_SECRET=
+HUB_LOOKUP_SECRET=
+RECAP_SERVICE_SECRET=

@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<!-- SPDX-License-Identifier: AGPL-3.0-only | Copyright (C) 2026 the Subscription Graveyard authors. See LICENSE. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Subscription Graveyard</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><rect x='4' y='4' width='72' height='72' rx='20' fill='%23FF6B57'/><path d='M24 62V36c0-9 7-16 16-16s16 7 16 16v26z' fill='%23FFF4EF'/><path d='M46 36.5c0-3-2.7-5-6-5s-6 1.8-6 4.4c0 2.7 2.6 3.8 6 4.6 3.4.8 6 1.9 6 4.6 0 2.6-2.7 4.4-6 4.4s-6-2-6-5' stroke='%233A0D07' stroke-width='3.4' stroke-linecap='round' fill='none'/><path d='M40 27v27' stroke='%233A0D07' stroke-width='3.4' stroke-linecap='round'/><rect x='16' y='60' width='48' height='7' rx='3.5' fill='%236EDBA8'/></svg>"/>
+<meta name="theme-color" content="#141113"/>
+<meta name="description" content="Track every subscription you've canceled. Each one gets a tombstone, and the money you saved keeps adding up."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="/"/>
+<meta property="og:title" content="Subscription Graveyard: Bury your subscriptions. Save your money."/>
+<meta property="og:description" content="Track canceled subscriptions, give each one a tombstone, and watch your savings grow."/>
+<meta property="og:image" content="/og.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Subscription Graveyard"/>
+<meta name="twitter:description" content="Track canceled subscriptions, watch your savings grow."/>
+<meta name="twitter:image" content="/og.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#141113;--bg2:#1C1719;
+  --primary:#FF6B57;--primary-d:#E5533F;--primary-ink:#2A0905;--primary-glow:rgba(255,107,87,0.25);
+  --money:#6EDBA8;--money-2:#A6EDCB;--money-glow:rgba(110,219,168,0.3);
+  --accent:#E9DFC9;--lamp:#F2B45A;--reaper:#D63A4A;
+  --text:#F4EDE8;--muted:#B4A7A6;
+  --card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --blood:#FF8F80;
+  --font-head:'Bricolage Grotesque','Avenir Next',system-ui,sans-serif;
+  --font-body:'Figtree','Avenir Next',system-ui,sans-serif;
+}
+button,input,select,textarea{font-family:inherit}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+/* Shared feedback widget (feedback-widget.js) ships a purple button; match it to this app's primary. */
+.fbw-btn,.fbw-submit{background:var(--primary)!important;color:var(--primary-ink)!important;font-family:var(--font-head)!important;font-weight:700!important}
+.fbw-types label.fbw-on{border-color:#B23A2A!important;background:#F8ECE6!important;color:#5A1A10!important}
+
+*{margin:0;padding:0;box-sizing:border-box}
+/* Keyboard focus indicators — WCAG 2.1 AA (2.4.7 Focus Visible) */
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px;border-radius:4px}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;overflow-x:hidden;width:100%;max-width:100vw}
+html{overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.2}
+/* Animated mesh gradient background */
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-blob{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;mix-blend-mode:screen}
+.blob1{width:min(600px,90vw);height:min(600px,90vw);background:radial-gradient(circle,rgba(255,107,87,0.06),rgba(255,107,87,0.018) 60%,transparent 80%);top:-15%;left:-15%;animation:meshFloat1 20s ease-in-out infinite}
+.blob2{width:min(500px,80vw);height:min(500px,80vw);background:radial-gradient(circle,rgba(110,219,168,0.07),rgba(110,219,168,0.02) 60%,transparent 80%);bottom:-10%;right:-10%;animation:meshFloat2 25s ease-in-out infinite}
+.blob3{width:min(450px,70vw);height:min(450px,70vw);background:radial-gradient(circle,rgba(233,223,201,0.05),rgba(255,107,87,0.012) 60%,transparent 80%);top:35%;left:30%;animation:meshFloat3 22s ease-in-out infinite}
+.blob4{width:min(350px,60vw);height:min(350px,60vw);background:radial-gradient(circle,rgba(110,219,168,0.04),transparent 70%);top:10%;right:20%;animation:meshFloat4 18s ease-in-out infinite}
+@keyframes meshFloat1{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(8%,5%) scale(1.05)}50%{transform:translate(3%,10%) scale(.97)}75%{transform:translate(-5%,3%) scale(1.03)}}
+@keyframes meshFloat2{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-6%,-8%) scale(1.06)}66%{transform:translate(4%,-3%) scale(.95)}}
+@keyframes meshFloat3{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(10%,-6%) scale(1.04)}50%{transform:translate(-5%,8%) scale(.98)}75%{transform:translate(3%,-4%) scale(1.02)}}
+@keyframes meshFloat4{0%,100%{transform:translate(0,0)}50%{transform:translate(-8%,6%)}}
+
+/* ===== AUTH ===== */
+/* Boot screen: held up while a stored session or a hub token is exchanged, so the
+   logged-out card never paints over a sign-in that is already on its way in. */
+.boot-screen{position:fixed;inset:0;z-index:101;background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px;text-align:center}
+.boot-dot{width:12px;height:12px;border-radius:50%;background:var(--primary);animation:bootPulse 1.1s ease-in-out infinite}
+@keyframes bootPulse{0%,100%{transform:scale(.65);opacity:.4}50%{transform:scale(1);opacity:1}}
+.boot-msg{margin:0;font-size:15px;color:var(--muted);min-height:1.3em}
+/* If JavaScript never arrives, this overlay must not trap the reader on a spinner
+   forever. It gives up after 10s and lets the login screen through. With JS the
+   boot gate hides it long before that, so this only fires when scripting is dead. */
+.boot-screen{animation:bootGiveUp 1s 10s forwards}
+@keyframes bootGiveUp{to{opacity:0;visibility:hidden}}
+@media (prefers-reduced-motion:reduce){.boot-dot{animation:none;opacity:.8}}
+.auth-screen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.auth-split{width:100%;max-width:420px;position:relative;z-index:1}
+.auth-promo{display:none}
+.promo-keeper svg{filter:drop-shadow(0 0 10px rgba(255,107,87,.38)) drop-shadow(0 0 30px rgba(110,219,168,.16))}
+.auth-keeper-mobile{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:12px}
+.auth-keeper-bubble{background:rgba(255,107,87,0.09);border:1px solid rgba(255,107,87,0.18);border-radius:16px;padding:8px 16px;font-size:.82rem;color:rgba(244,237,232,0.8);font-style:italic}
+.auth-mobile-pitch{font-size:.8rem;color:var(--muted);text-align:center;line-height:1.55;max-width:280px}
+.auth-box{background:linear-gradient(135deg,rgba(28,23,25,0.95),rgba(21,15,17,0.9));border:1px solid rgba(255,107,87,0.09);border-radius:24px;padding:36px 30px;width:100%;box-shadow:0 8px 60px rgba(255,107,87,0.072),0 2px 8px rgba(0,0,0,.3);backdrop-filter:blur(20px) saturate(1.3)}
+.auth-logo{text-align:center;margin-bottom:28px}
+.auth-logo .t1{font-family:var(--font-head);font-weight:700;font-size:1.8rem;background:linear-gradient(135deg,var(--primary),var(--primary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;line-height:1.2;margin-top:10px}
+.auth-logo .t2{font-size:.82rem;color:var(--muted);margin-top:8px;display:block;line-height:1.6}
+.auth-tabs{display:flex;background:var(--card);border-radius:12px;margin-bottom:20px;border:1px solid var(--card-border);padding:3px;gap:3px}
+.auth-tab{flex:1;min-height:44px;padding:10px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:var(--font-body);transition:.25s;border-radius:10px}
+.auth-tab.active{color:var(--bg);background:linear-gradient(135deg,var(--primary),var(--primary-d));box-shadow:0 4px 16px var(--primary-glow)}
+.auth-fg{margin-bottom:14px}
+.auth-label{font-size:10px;color:var(--muted);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+.auth-input{width:100%;background:var(--card);border:1.5px solid var(--card-border);border-radius:10px;padding:11px 14px;font-size:14px;color:var(--text);font-family:var(--font-body);outline:none;transition:all .2s}
+.auth-input:focus{border-color:rgba(255,107,87,0.3);box-shadow:0 0 0 3px rgba(255,107,87,0.09)}
+.auth-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--primary),var(--primary-d));color:var(--primary-ink);border:none;border-radius:10px;font-family:var(--font-head);font-weight:700;font-size:1rem;cursor:pointer;transition:all .2s;margin-top:6px}
+.auth-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px var(--primary-glow)}
+.auth-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.auth-err{background:rgba(255,143,128,0.1);border:1px solid rgba(255,143,128,0.2);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--blood);margin-bottom:14px;display:none}
+.auth-suc{background:rgba(110,219,168,0.08);border:1px solid rgba(110,219,168,0.2);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--money);margin-bottom:14px;display:none}
+.auth-nl{display:flex;align-items:flex-start;gap:8px;margin:16px 0 6px;font-size:11px;color:var(--muted);line-height:1.5}
+.auth-nl input{margin-top:3px;accent-color:var(--primary)}
+.auth-forgot{font-size:11px;color:var(--muted);cursor:pointer;border:none;background:none;font-family:var(--font-body);margin-top:8px;transition:.15s;min-height:44px;padding:0 10px}
+.auth-forgot:hover{color:var(--primary)}
+.auth-privacy{font-size:10px;color:var(--muted);text-align:center;margin-top:16px}
+.auth-privacy a{color:var(--text);opacity:.5;cursor:pointer;transition:.15s}
+.auth-privacy a:hover{opacity:1;color:var(--primary)}
+.auth-privacy a{display:inline-flex;align-items:center;min-height:44px}
+.auth-meta{font-size:10px;color:var(--muted);text-align:center;margin-top:4px;line-height:1.6}
+.auth-meta a{color:var(--muted);text-decoration:underline}
+.reset-screen{position:fixed;inset:0;z-index:101;display:none;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
+
+/* ===== LOGGED-OUT PRODUCT PREVIEW ===== */
+.auth-preview{margin-top:22px;position:relative;width:100%}
+.preview-label{font-family:var(--font-head);font-weight:700;font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;margin-bottom:10px}
+.preview-tombs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tombstone.tomb-mini{padding:14px 6px 12px;border-radius:12px;cursor:default}
+.tombstone.tomb-mini:hover{transform:none}
+.tomb-mini .tomb-rip{font-family:var(--font-head);font-weight:700;font-size:.58rem;color:var(--muted);letter-spacing:.22em;margin:6px 0 2px}
+.tomb-mini .tomb-name{font-size:.74rem;margin-bottom:2px}
+.tomb-mini .tomb-saved{font-size:.7rem;font-weight:800}
+.auth-preview .bar-label{font-size:.68rem}
+.auth-preview-mobile{margin-top:10px;text-align:center}
+.auth-preview-mobile .preview-tombs{grid-template-columns:1fr 1fr}
+
+/* ===== APP GRID ===== */
+/* Four-step responsive shell (jen-web-design). These are web apps, not phone
+   apps: the shell widens with the screen, what stays capped is the reading
+   column. The old flat max-width:940px used 49% of a 1920 screen.
+   Character column is a clamp, not a flat 280px — at 661px a fixed column left
+   the content at 293px, which really was cramped.
+   NOTE: this app is TABBED, so there is no third data
+   column to move blocks into (only one panel is visible at a time). The height
+   win here comes from .tomb-grid reflowing to more columns instead. */
+.app{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:2.5rem 1.5rem 4rem;display:grid;grid-template-columns:clamp(220px,30%,300px) minmax(0,1fr);grid-template-rows:auto 1fr;gap:1.5rem 2.5rem;align-items:start}
+@media(min-width:1024px){.app{max-width:1180px}}
+@media(min-width:1440px){.app{max-width:1560px}}
+/* Prose and form panels keep a reading cap inside the wide shell — a 1200px
+   text input is nonsense. The two grid panels are exempt: they hold cards, not
+   prose, and using the width is the entire point. */
+@media(min-width:1024px){
+  #panel-add,#panel-watchlist,#panel-deathrow{max-width:680px}
+}
+.app-header{grid-column:1/-1;text-align:center;padding-bottom:.5rem;position:relative}
+.app-title{font-family:var(--font-head);font-weight:700;font-size:clamp(2rem,5vw,3rem);line-height:1;background:linear-gradient(135deg,var(--primary),var(--primary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 30px var(--money-glow))}
+.app-subtitle{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.2em;margin-top:.5rem}
+
+/* ===== BRAND LOCKUP =====================================================
+   Mark (headstone with a dollar carved in, on a purple tile) + two-tone
+   wordmark with a purple swoosh under the pop word. Fills are hardcoded hex
+   on purpose — fill="var(--x)" as a presentation attribute is unreliable, and
+   the mark must render identically anywhere it is dropped.
+   COPIES TO HAND-SYNC when the geometry changes:
+     public/index.html (this block, the header h1, the auth screen, favicon <link>)
+     public/legal/privacy.html, terms.html, accessibility.html, do-not-sell.html
+     public/og-preview.html (brand row)
+   Reference geometry + the rejected drafts: brand/preview.html
+   ====================================================================== */
+.sg-brand{display:inline-flex;align-items:center;gap:.42em;text-decoration:none;padding:6px;margin:-6px}
+.sg-brand svg{display:block;flex:none}
+.sg-word{font-family:var(--font-head);font-weight:700;line-height:1;display:inline-flex;align-items:baseline;gap:.28em;white-space:nowrap}
+/* .app-title uses gradient text — background-clip:text with
+   -webkit-text-fill-color:transparent. That inherits, so without resetting it
+   here the wordmark paints transparent and only the swoosh shows. */
+.sg-word-ink,.sg-word-pop{background:none;-webkit-background-clip:border-box;background-clip:border-box;filter:none}
+.sg-word-ink{color:var(--text);-webkit-text-fill-color:var(--text)}
+.sg-word-pop{position:relative;display:inline-block;color:var(--primary);-webkit-text-fill-color:var(--primary)}
+.sg-swoosh{position:absolute;left:0;bottom:-.22em;width:100%;height:.19em;overflow:visible}
+/* Header hero: the two words STACK. "SubscriptionGraveyard" on one nowrap line
+   sets a ~470px min-content width, and a 1fr grid track takes an auto minimum —
+   so the whole page would inherit it and scroll sideways on a phone. Stacking
+   caps the min-content width at the longer single word. */
+.app-title .sg-word{flex-direction:column;align-items:flex-start;gap:.02em;font-size:clamp(1.5rem,4.6vw,2.6rem)}
+.app-title .sg-brand{gap:.34em;justify-content:center}
+.app-title .sg-mark{width:clamp(40px,7vw,60px);height:clamp(40px,7vw,60px)}
+.auth-logo-title .sg-word{font-size:1.06rem}
+.auth-logo-title .sg-mark{width:28px;height:28px}
+@media(max-width:380px){
+  /* Even stacked, "Subscription" alone is the min-content driver down here. */
+  .app-title .sg-word{font-size:1.32rem}
+  .app-title .sg-mark{width:34px;height:34px}
+}
+.app-header-top{display:flex;justify-content:flex-end;margin-bottom:.5rem}
+.app-header-actions{display:flex;gap:8px;align-items:center}
+.user-email{font-size:.68rem;color:var(--muted)}
+.hdr-link{font-size:.72rem;color:var(--muted);cursor:pointer;border:none;background:none;font-family:var(--font-body);transition:.15s}
+.hdr-link:hover{color:var(--primary)}
+
+/* ===== KEEPER PANEL ===== */
+.keeper-panel{display:flex;flex-direction:column;align-items:center;gap:1.25rem;position:sticky;top:2rem;height:fit-content}
+.speech-bubble{background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:1rem 1.25rem;font-family:var(--font-head);font-weight:700;font-size:1rem;color:var(--text);text-align:center;line-height:1.5;width:100%;min-height:60px;display:flex;align-items:center;justify-content:center;position:relative;transition:all .3s;backdrop-filter:blur(16px) saturate(1.2);box-shadow:0 4px 16px rgba(0,0,0,.2),inset 0 1px 1px rgba(255,255,255,.05)}
+.speech-bubble::after{content:'';position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--card-border)}
+.speech-bubble::before{content:'';position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--bg2);z-index:1}
+.character-wrap{cursor:pointer;width:200px;height:248px;flex-shrink:0;filter:drop-shadow(0 6px 20px rgba(255,107,87,0.18)) drop-shadow(0 12px 40px rgba(255,107,87,0.09));transition:filter .3s;position:relative}
+.character-wrap::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:220px;height:280px;background:radial-gradient(ellipse,rgba(255,107,87,0.12),rgba(110,219,168,0.08) 40%,transparent 70%);border-radius:50%;pointer-events:none;z-index:-1;transition:all .4s;animation:keeperGlow 4s ease-in-out infinite}
+.character-wrap:hover::before{width:280px;height:340px;background:radial-gradient(ellipse,rgba(110,219,168,0.3),rgba(255,107,87,0.09) 40%,transparent 70%)}
+.character-wrap:hover{filter:drop-shadow(0 0 24px rgba(110,219,168,0.5)) drop-shadow(0 0 60px rgba(255,107,87,0.15))}
+@keyframes keeperGlow{0%,100%{opacity:.8;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
+.keeper-char{transition:filter .3s}
+@keyframes idle-sway{0%,100%{transform:rotate(-1.5deg) translateY(0)}50%{transform:rotate(1.5deg) translateY(-5px)}}
+@keyframes pleased-bounce{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-14px) scale(1.03) rotate(-2deg)}60%{transform:translateY(-8px) scale(1.01) rotate(2deg)}}
+@keyframes celebrating{0%{transform:rotate(0) translateY(0)}15%{transform:rotate(-6deg) translateY(-18px)}30%{transform:rotate(6deg) translateY(-10px) scale(1.05)}50%{transform:rotate(-8deg) translateY(-22px)}65%{transform:rotate(8deg) translateY(-12px) scale(1.08)}80%{transform:rotate(-4deg) translateY(-16px)}100%{transform:rotate(0) translateY(0)}}
+.state-idle{animation:idle-sway 3.2s ease-in-out infinite}
+.state-pleased{animation:pleased-bounce .5s ease-in-out 2}
+.state-celebrating{animation:celebrating .35s ease-in-out infinite}
+/* savings bar */
+.savings-bar-wrap{width:100%}
+.bar-label{display:flex;justify-content:space-between;font-family:var(--font-head);font-weight:700;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
+.savings-bar{background:rgba(255,255,255,.05);border-radius:100px;height:10px;overflow:hidden}
+.savings-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--money-2),var(--money));box-shadow:0 0 12px var(--money-glow);transition:width .5s cubic-bezier(.34,1.56,.64,1)}
+
+/* ===== MAIN CONTENT ===== */
+.main-content{min-width:0}
+/* Tabs */
+.tabs-wrap{position:relative;margin-bottom:1rem}
+/* Right-edge fade: shown (via .scroll-more from app.js) while more tabs are off-screen */
+.tabs-wrap::after{content:'';position:absolute;top:1px;bottom:1px;right:1px;width:32px;border-radius:0 13px 13px 0;background:linear-gradient(90deg,rgba(20,17,19,0),rgba(20,17,19,0.88));pointer-events:none;opacity:0;transition:opacity .2s}
+.tabs-wrap.scroll-more::after{opacity:1}
+.tabs{display:flex;background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border-radius:14px;border:1px solid rgba(255,255,255,.07);padding:4px;gap:2px;backdrop-filter:blur(16px) saturate(1.2);box-shadow:0 4px 16px rgba(0,0,0,.2),inset 0 1px 1px rgba(255,255,255,.04)}
+.tab-lbl-short{display:none}
+.tab{flex:1;padding:10px 4px;font-size:.78rem;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:transparent;transition:all .2s;font-family:var(--font-body);border-radius:10px;position:relative}
+.tab.active{color:var(--text);background:linear-gradient(135deg,rgba(255,107,87,0.12),rgba(110,219,168,0.1));box-shadow:0 2px 8px rgba(255,107,87,0.09)}
+.tab:hover:not(.active){color:var(--text);background:rgba(255,255,255,.04)}
+.tab[data-tooltip]::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);background:var(--bg2);border:1px solid var(--card-border);color:var(--muted);font-size:10px;font-weight:400;white-space:nowrap;padding:5px 10px;border-radius:8px;opacity:0;pointer-events:none;transition:all .2s;box-shadow:0 4px 16px rgba(0,0,0,.4);z-index:10}
+.tab[data-tooltip]:hover::after{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Suppress the hover tooltip right after a tab is clicked (cleared on mouseleave) */
+.tab.tt-off::after{opacity:0!important;transform:translateX(-50%) translateY(4px)!important}
+.panel{display:none}.panel.active{display:block}
+
+/* ===== CARDS ===== */
+.card{background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:18px 20px;margin-bottom:12px;backdrop-filter:blur(16px) saturate(1.2);box-shadow:0 4px 16px rgba(0,0,0,.15),inset 0 1px 1px rgba(255,255,255,.04)}
+.sec-lbl{font-family:var(--font-head);font-weight:700;font-size:.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+
+/* ===== TOMBSTONES ===== */
+/* Was a hard `1fr 1fr`, so a wider shell made tombstones wider instead of
+   fitting more per row and the page never got shorter. 170px min keeps 2
+   columns at 661 and gives 4 at 1180 / 6 at 1560, all ~170-200px wide.
+   Mobile (<=660) overrides back to an explicit 1fr 1fr — see below — so the
+   phone layout is byte-identical to before. */
+.tomb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.tombstone{border-radius:16px;padding:24px 16px;text-align:center;position:relative;transition:all .25s cubic-bezier(.34,1.2,.64,1);cursor:default;background:linear-gradient(160deg,rgba(46,37,39,0.8),rgba(26,20,22,0.9));border:1px solid rgba(255,107,87,0.09);overflow:hidden;backdrop-filter:blur(12px);box-shadow:0 6px 24px rgba(0,0,0,.3),0 2px 6px rgba(0,0,0,.2),inset 0 1px 1px rgba(255,255,255,.06)}
+.tombstone::before{content:'';position:absolute;inset:0;border-radius:16px;opacity:0;transition:opacity .25s;pointer-events:none}
+.tombstone:hover{transform:translateY(-5px);border-color:rgba(255,107,87,0.21);box-shadow:0 10px 32px rgba(255,107,87,0.072),0 4px 12px rgba(0,0,0,.3)}
+.tombstone:hover::before{opacity:1}
+.tomb-fresh::before{background:linear-gradient(160deg,rgba(242,180,90,0.12),transparent)}
+.tomb-established::before{background:linear-gradient(160deg,rgba(255,107,87,0.072),transparent)}
+.tomb-weathered::before{background:linear-gradient(160deg,rgba(110,219,168,0.12),transparent)}
+.tomb-ancient::before{background:linear-gradient(160deg,rgba(233,223,201,0.12),transparent)}
+.tomb-cross{margin-bottom:12px;opacity:1}
+.tomb-name{font-family:var(--font-head);font-weight:700;font-size:1.05rem;margin-bottom:4px;line-height:1.3;color:var(--text)}
+.tomb-cost{font-size:.8rem;color:var(--muted);margin-bottom:10px}
+.tomb-saved{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,var(--money),var(--money-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(110,219,168,0.2))}
+.tomb-saved-label{font-size:.65rem;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+.tomb-days{font-size:.75rem;color:var(--muted);margin-top:8px}
+.tomb-age-badge{font-size:.65rem;position:absolute;top:8px;right:8px;background:rgba(255,107,87,0.12);padding:4px 10px;border-radius:20px;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;font-weight:700;border:1px solid rgba(255,107,87,0.09)}
+.tomb-delete{position:absolute;top:0;left:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:var(--muted);opacity:0;font-size:24px;line-height:1;transition:all .2s}
+.tombstone:hover .tomb-delete{opacity:.5}
+.tomb-delete:hover{opacity:1!important;color:var(--blood)}
+@media(hover:none){.tomb-delete{opacity:.45}}
+@keyframes tombRise{0%{transform:translateY(20px) scale(.96);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
+
+/* ===== FORMS ===== */
+.fg{margin-bottom:12px}
+.flbl{font-size:10px;color:var(--muted);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+.finput,.fsel{width:100%;background:var(--card);border:1.5px solid var(--card-border);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--text);font-family:var(--font-body);outline:none;transition:all .2s}
+.finput:focus,.fsel:focus{border-color:rgba(255,107,87,0.3);box-shadow:0 0 0 3px rgba(255,107,87,0.09)}
+.fsel option{background:var(--bg2);color:var(--text)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}
+.btn{padding:12px;border:none;border-radius:10px;font-family:var(--font-head);font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;display:block;width:100%;text-align:center}
+.btn:hover{transform:translateY(-2px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-green{background:linear-gradient(135deg,var(--primary),var(--primary-d));color:var(--primary-ink);box-shadow:0 4px 16px var(--primary-glow),inset 0 1px 1px rgba(255,255,255,.2);position:relative;overflow:hidden}
+.btn-green::before{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,.15),transparent);pointer-events:none;border-radius:10px 10px 0 0}
+.btn-green:hover{box-shadow:0 6px 24px var(--primary-glow),0 2px 8px rgba(110,219,168,0.2)}
+.btn-amber{background:linear-gradient(135deg,var(--lamp),#D9963A);color:var(--bg);box-shadow:0 4px 16px rgba(242,180,90,0.2)}
+.btn-danger{background:rgba(255,143,128,0.1);color:var(--blood);border:1px solid rgba(255,143,128,0.2)}
+.btn-sm{font-size:.75rem;padding:7px 14px;width:auto;display:inline-block}
+
+/* ===== DEATH ROW ===== */
+.dr-card{background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px 16px 14px 20px;margin-bottom:10px;position:relative;transition:all .25s;backdrop-filter:blur(16px) saturate(1.2);box-shadow:0 2px 8px rgba(0,0,0,.15),inset 0 1px 1px rgba(255,255,255,.04)}
+.dr-card:hover{border-color:rgba(255,143,128,0.2);transform:translateX(3px);box-shadow:0 4px 16px rgba(255,143,128,0.08)}
+.dr-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--blood),rgba(255,143,128,0.3));border-radius:14px 0 0 14px}
+.dr-name{font-family:var(--font-head);font-weight:700;font-size:.95rem;color:var(--text)}
+.dr-cost{font-size:.8rem;color:var(--lamp);margin-top:3px;font-weight:600}
+.dr-notes{font-size:.75rem;color:var(--muted);margin-top:5px;font-style:italic}
+.dr-actions{display:flex;gap:8px;margin-top:10px}
+
+/* ===== DASHBOARD ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:10px}
+.stat-card{background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:16px;text-align:center;transition:all .25s;backdrop-filter:blur(16px) saturate(1.2);box-shadow:0 4px 12px rgba(0,0,0,.15),inset 0 1px 1px rgba(255,255,255,.04)}
+.stat-card:hover{border-color:rgba(255,107,87,0.12);transform:translateY(-3px);box-shadow:0 8px 24px rgba(255,107,87,0.06),inset 0 1px 1px rgba(255,255,255,.04)}
+.stat-lbl{font-size:.65rem;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+.stat-val{font-family:var(--font-head);font-weight:700;font-size:1.3rem;color:var(--text)}
+.stat-val.green{background:linear-gradient(135deg,var(--money),var(--money-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-val.amber{background:linear-gradient(135deg,var(--lamp),#F7D08F);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cat-bar-wrap{margin-bottom:8px}
+.cat-bar-label{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-bottom:4px}
+.cat-bar-track{background:rgba(255,255,255,.05);border-radius:6px;height:6px;overflow:hidden}
+.cat-bar-fill{height:100%;border-radius:6px;transition:width .6s cubic-bezier(.34,1.2,.64,1);box-shadow:0 0 8px rgba(255,255,255,.1)}
+.tier-card{background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:18px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;backdrop-filter:blur(16px) saturate(1.2);box-shadow:0 4px 16px rgba(0,0,0,.15),inset 0 1px 1px rgba(255,255,255,.04)}
+.tier-label{font-family:var(--font-head);font-weight:700;font-size:1rem;color:var(--text)}
+.tier-sub{font-size:.8rem;color:var(--money);margin-top:2px}
+
+/* ===== NUDGE ===== */
+.tip-card{background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px 16px;margin-top:12px;backdrop-filter:blur(12px) saturate(1.2);box-shadow:0 2px 8px rgba(0,0,0,.1),inset 0 1px 1px rgba(255,255,255,.04)}
+.tip-text{font-size:.8rem;color:var(--muted);line-height:1.6;margin-bottom:8px}
+.tip-cta{font-size:.8rem;color:var(--money);text-decoration:none;font-weight:700;transition:.15s}
+.tip-cta:hover{text-decoration:underline}
+.tip-disc{font-size:.7rem;color:var(--muted);margin-top:6px}
+
+/* App help tip. Same shell as the promo card, purple CTA instead of green so
+   the two read as different things at a glance. No link, nothing to disclose. */
+.help-tip{background:linear-gradient(135deg,rgba(255,107,87,0.06),rgba(255,255,255,.02));
+  border:1px solid rgba(255,107,87,0.132)}
+.help-tip .tip-text{color:var(--text);opacity:.85}
+.help-tip .tip-cta{color:var(--accent);background:none;border:none;padding:0;cursor:pointer;
+  font-family:var(--font-body);font-size:.8rem;font-weight:700}
+.help-tip .tip-cta:hover{text-decoration:underline}
+
+/* Inline hints: one muted line under the control it explains. */
+.sg-hint{font-size:.72rem;color:var(--muted);line-height:1.5;margin:.35rem 0 0;font-weight:600}
+.sg-hint:empty{display:none}
+
+/* ===== HELP PANEL ===== */
+.helpbtn{width:28px;height:28px;border-radius:999px;border:1.5px solid rgba(255,255,255,.18);
+  background:none;color:var(--muted);font-family:var(--font-head);font-weight:700;font-size:.9rem;
+  cursor:pointer;line-height:1;flex-shrink:0;padding:0}
+.helpbtn:hover{color:var(--text);border-color:var(--primary)}
+.help-modal{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:16px}
+.help-backdrop{position:absolute;inset:0;background:rgba(20,17,19,0.82);backdrop-filter:blur(4px)}
+.help-card{position:relative;background:var(--bg2);border:1px solid var(--card-border);border-radius:18px;
+  width:min(560px,100%);max-height:min(86vh,860px);display:flex;flex-direction:column;
+  box-shadow:0 24px 70px rgba(0,0,0,.6)}
+.help-x{position:absolute;top:8px;right:12px;background:none;border:none;color:var(--muted);
+  font-size:1.6rem;line-height:1;cursor:pointer;padding:4px 8px}
+.help-x:hover{color:var(--text)}
+.help-body{overflow-y:auto;padding:1.6rem 1.4rem .6rem;-webkit-overflow-scrolling:touch;text-align:left}
+.help-body h2{font-family:var(--font-head);font-weight:700;font-size:1.3rem;margin:0 0 .2rem;color:var(--text)}
+.help-sub{font-size:.85rem;color:var(--muted);margin:0 0 .4rem}
+.help-body h3{font-family:var(--font-head);font-weight:700;font-size:1rem;color:var(--money);margin:1.3rem 0 .3rem}
+.help-body p,.help-body li{font-size:.88rem;line-height:1.6;color:var(--text)}
+.help-body p{margin:.45rem 0}
+.help-body ul,.help-body ol{padding-left:1.2rem;margin:.4rem 0}
+.help-body li{margin:.25rem 0}
+.help-body b{color:#fff}
+.help-body a{color:var(--primary)}
+.helprow{display:flex;gap:.6rem;align-items:baseline;margin:.4rem 0}
+.hchip{flex-shrink:0;display:inline-block;font-weight:800;font-size:.66rem;letter-spacing:.03em;
+  text-transform:uppercase;padding:.15rem .5rem;border-radius:999px;border:1px solid currentColor}
+.hchip.c-green{color:var(--money)} .hchip.c-amber{color:var(--lamp)} .hchip.c-purple{color:var(--accent)}
+.help-foot{display:flex;gap:.6rem;justify-content:flex-end;padding:.9rem 1.4rem 1.2rem;
+  border-top:1px solid var(--card-border);flex-wrap:wrap}
+.help-done{background:linear-gradient(135deg,var(--primary),var(--primary-d));color:var(--primary-ink);border:none;
+  border-radius:999px;padding:.55rem 1.3rem;font-family:var(--font-body);font-weight:800;
+  font-size:.88rem;cursor:pointer}
+.help-tour{background:none;color:var(--primary);border:1.5px solid rgba(110,219,168,0.4);border-radius:999px;
+  padding:.55rem 1.2rem;font-family:var(--font-body);font-weight:800;font-size:.88rem;cursor:pointer}
+.help-tour:hover{border-color:var(--primary)}
+
+/* ===== GUIDED TOUR ===== */
+#tourring{position:fixed;border:3px solid var(--primary);border-radius:14px;
+  box-shadow:0 0 0 6px rgba(110,219,168,0.2),0 0 30px rgba(110,219,168,0.32);
+  pointer-events:none;z-index:99998;transition:all .25s ease}
+#tourbox{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;width:min(440px,calc(100vw - 24px));
+  background:var(--bg2);border:1px solid var(--card-border);border-radius:16px;padding:14px 16px;
+  box-shadow:0 14px 44px rgba(0,0,0,.62);z-index:99999;text-align:left}
+#tourbox p{font-size:.88rem;line-height:1.5;margin:0 0 10px;color:var(--text)}
+.tourrow{display:flex;gap:.5rem;align-items:center;justify-content:flex-end}
+.tourcount{margin-right:auto;font-size:.72rem;color:var(--muted);font-weight:800}
+.tourbtn{background:linear-gradient(135deg,var(--primary),var(--primary-d));color:var(--primary-ink);border:none;
+  border-radius:999px;padding:.45rem 1.1rem;font-family:var(--font-body);font-weight:800;
+  font-size:.85rem;cursor:pointer}
+.tourbtn.ghost{background:none;color:var(--muted);border:1.5px solid rgba(255,255,255,.18)}
+.tourbtn.ghost:hover{color:var(--text)}
+@media (prefers-reduced-motion: reduce){#tourring{transition:none}}
+
+/* Load-failure banner: sits above the tabs, hidden until loadAppData() fails */
+.load-banner{display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:rgba(255,143,128,0.1);border:1px solid rgba(255,143,128,0.3);border-radius:14px;padding:12px 16px;margin-bottom:12px;font-size:.85rem;color:var(--text)}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,rgba(28,23,25,0.92),rgba(21,15,17,0.88));backdrop-filter:blur(20px) saturate(1.3);color:var(--text);padding:12px 24px;border-radius:14px;font-size:13px;font-weight:600;z-index:200;animation:toastIn .35s cubic-bezier(.34,1.2,.64,1),toastOut .3s 2.2s forwards;border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 32px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.2),inset 0 1px 1px rgba(255,255,255,.05)}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(16px) scale(.95)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+@keyframes toastOut{to{opacity:0;transform:translateX(-50%) translateY(16px) scale(.95)}}
+
+/* ===== PARTICLES ===== */
+.particle{position:fixed;pointer-events:none;z-index:998;border-radius:50%;animation:pfly var(--dur) cubic-bezier(.25,.46,.45,.94) forwards}
+@keyframes pfly{0%{transform:translate(0,0) scale(1) rotate(0);opacity:1}100%{transform:translate(var(--tx),var(--ty)) scale(0) rotate(var(--rot));opacity:0}}
+@keyframes screen-flash{0%{opacity:1}100%{opacity:0}}
+
+/* ===== CELEBRATION ===== */
+.celeb-overlay{position:fixed;inset:0;z-index:150;background:rgba(20,17,19,0.85);display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(12px)}
+.celeb-box{background:linear-gradient(135deg,rgba(28,23,25,0.96),rgba(21,15,17,0.92));border:1px solid rgba(255,107,87,0.12);border-radius:24px;padding:36px 28px;max-width:400px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(255,107,87,0.09),0 4px 16px rgba(0,0,0,.3),inset 0 1px 1px rgba(255,255,255,.05);animation:celebPop .5s cubic-bezier(.34,1.56,.64,1);backdrop-filter:blur(20px) saturate(1.3)}
+@keyframes celebPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.celeb-creature{margin-bottom:4px;animation:creatureBounce 1s ease infinite}
+/* Creature stickers: cream border from four hard drop-shadows, then a soft ember glow. */
+.celeb-creature svg{width:128px;height:128px;filter:drop-shadow(2px 0 0 #E9DFC9) drop-shadow(-2px 0 0 #E9DFC9) drop-shadow(0 2px 0 #E9DFC9) drop-shadow(0 -2px 0 #E9DFC9) drop-shadow(0 0 12px rgba(255,107,87,.35))}
+.ambient-critter svg{width:80px;height:80px}
+@keyframes creatureBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.celeb-title{font-family:var(--font-head);font-weight:700;font-size:1.5rem;background:linear-gradient(135deg,var(--money),var(--money-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:12px 0 8px}
+.celeb-msg{font-size:.85rem;color:var(--muted);line-height:1.7;margin-bottom:20px}
+.celeb-close{background:linear-gradient(135deg,var(--primary),var(--primary-d));color:var(--primary-ink);border:none;border-radius:10px;padding:12px 28px;font-family:var(--font-head);font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px var(--primary-glow)}
+.celeb-close:hover{transform:translateY(-2px);box-shadow:0 6px 24px var(--primary-glow)}
+#confetti-canvas{position:fixed;inset:0;z-index:160;pointer-events:none}
+
+/* ===== MODALS ===== */
+.modal-overlay{position:fixed;inset:0;z-index:170;background:rgba(20,17,19,0.92);display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto;backdrop-filter:blur(8px)}
+.modal-box{background:rgba(28,23,25,0.95);border:1px solid rgba(255,107,87,0.12);border-radius:20px;padding:28px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 24px 80px rgba(255,107,87,0.09)}
+.modal-box h3{font-family:var(--font-head);font-weight:700;font-size:1.1rem;color:var(--text);margin-bottom:14px}
+.modal-box p{font-size:.8rem;color:var(--muted);line-height:1.7;margin-bottom:12px}
+.onboard-overlay{position:fixed;inset:0;z-index:140;background:rgba(20,17,19,0.92);display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px)}
+.onboard-box{background:rgba(28,23,25,0.95);border:1px solid rgba(255,107,87,0.12);border-radius:24px;padding:36px 28px;max-width:400px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(255,107,87,0.09)}
+
+/* ===== EMPTY ===== */
+.empty-state{text-align:center;padding:2.5rem 1rem;font-family:var(--font-head);font-weight:700;color:var(--muted);font-size:.95rem;line-height:1.6}
+
+/* ===== MOBILE ===== */
+@media(max-width:660px){
+  .app{grid-template-columns:minmax(0,1fr);padding:1rem .75rem 3rem;max-width:100vw;overflow-x:hidden}
+  /* Compact Keeper row: small keeper + speech bubble side by side, savings bar below,
+     so tombstones + savings land on screen one. Personality intact: same SVG (eye color,
+     mouth, blink, click reactions) just smaller. Desktop unchanged. */
+  .keeper-panel{position:static;flex-direction:row;flex-wrap:wrap;align-items:center;gap:.5rem .75rem;max-width:100%}
+  .character-wrap{width:92px;height:114px;order:1}
+  .character-wrap svg{width:92px;height:114px}
+  .character-wrap::before{width:104px;height:130px}
+  .speech-bubble{flex:1;min-width:0;width:auto;font-size:.8rem;padding:.6rem .8rem;order:2;max-width:100%;min-height:52px}
+  .speech-bubble::after{bottom:auto;top:50%;left:-10px;transform:translateY(-50%);border:5px solid transparent;border-right-color:var(--card-border)}
+  .speech-bubble::before{bottom:auto;top:50%;left:-9px;transform:translateY(-50%);border:5px solid transparent;border-right-color:var(--bg2);z-index:1}
+  .savings-bar-wrap{order:3;width:100%;max-width:100%}
+  .main-content{max-width:100%;overflow-x:hidden}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  /* Tabs never shrink below their label: the bar scrolls instead of clipping text */
+  .tab{flex:1 0 auto;min-width:0;white-space:nowrap;font-size:.72rem;padding:9px 8px}
+  .tab-lbl-full{display:none}
+  .tab-lbl-short{display:inline}
+  /* Hover tooltips are meaningless on touch AND their absolute boxes inflate
+     the scroll width, which would fake a scrollable tab bar. Off on mobile. */
+  .tab[data-tooltip]::after{display:none}
+  .tomb-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .tombstone{padding:12px 8px}
+  .tomb-name{font-size:.8rem}
+  .tomb-saved{font-size:.95rem}
+  .frow{grid-template-columns:1fr 1fr;gap:6px}
+  .card{padding:14px 12px}
+  .auth-split{max-width:100vw}
+  .auth-box{padding:28px 20px;max-width:100%}
+  .auth-promo{display:none}
+  .app-title{font-size:1.6rem}
+}
+@media(min-width:661px){
+  .auth-split{display:flex;max-width:820px;gap:0}
+  .auth-promo{display:flex;flex-direction:column;justify-content:center;padding:48px;background:rgba(28,23,25,0.95);border-radius:24px 0 0 24px;flex:1;min-width:320px;border:1px solid rgba(255,107,87,0.12);border-right:none;position:relative;overflow:hidden}
+  .auth-promo::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(255,107,87,0.06),transparent 60%);pointer-events:none}
+  .auth-promo .promo-title{font-family:var(--font-head);font-weight:700;font-size:1.8rem;color:var(--text);margin-bottom:14px;line-height:1.3;position:relative}
+  .auth-promo .promo-sub{font-size:.88rem;color:var(--muted);line-height:1.8;position:relative}
+  .auth-box{border-radius:0 24px 24px 0}
+  .auth-keeper-mobile{display:none}
+}
+/* Ambient critter flybys — decorative only, behind the app content */
+.ambient-critter{position:fixed;left:0;top:0;z-index:0;pointer-events:none;opacity:0}
+/* Reduced motion: calm the ambient/character loops for users who ask for it */
+@media(prefers-reduced-motion:reduce){
+  .bg-blob,.state-idle,.state-pleased,.state-celebrating,.celeb-creature{animation:none!important}
+  .character-wrap::before{animation:none!important}
+  .savings-fill{transition:none!important}
+  .ambient-critter{display:none!important}
+}
+/* Pro badge + locked-feature */
+.pro-badge-region{display:none;align-items:center;gap:.4rem;padding:.3rem .55rem;background:linear-gradient(135deg,rgba(242,180,90,0.18),rgba(217,150,58,0.12));border:1px solid rgba(242,180,90,0.3);border-radius:10px;font-size:.72rem}
+.pro-badge-region.show{display:inline-flex}
+.pro-badge{background:linear-gradient(135deg,var(--lamp),#D9963A);color:#1A1416;padding:.1rem .45rem;border-radius:6px;font-weight:700;letter-spacing:.04em;font-size:.65rem}
+.pro-until-text{color:var(--muted);font-size:.7rem}
+.unlock-pro-btn{display:inline-block;padding:.3rem .65rem;background:rgba(255,107,87,0.108);border:1px solid rgba(255,107,87,0.21);color:#FFC2B8;border-radius:10px;text-decoration:none;font-size:.72rem;font-weight:700;font-family:var(--font-body);transition:all .15s}
+.unlock-pro-btn:hover{background:rgba(255,107,87,0.192);color:#fff}
+.locked-feature{opacity:.55;position:relative}
+.locked-feature::after{content:'Pro';position:absolute;top:4px;right:4px;background:rgba(242,180,90,0.22);color:var(--lamp);padding:.1rem .4rem;border-radius:8px;font-size:.6rem;font-weight:700;pointer-events:auto;cursor:pointer;letter-spacing:.04em}
+/* Persistent Pro star — stays even after you HAVE Pro, so you can see what's premium */
+.pro-star{color:var(--lamp);font-size:.8em;margin-right:.2em;vertical-align:.05em}
+.pro-star svg,.pro-tag svg{width:.85em;height:.85em;display:inline-block;vertical-align:-.06em}
+.pro-tag{display:inline-flex;align-items:center;gap:.25rem;background:rgba(242,180,90,0.16);color:var(--lamp);border:1px solid rgba(242,180,90,0.3);padding:.12rem .5rem;border-radius:999px;font-size:.66rem;font-weight:700;letter-spacing:.03em}
+/* FOOTER — legal + tucked-away account controls at the very bottom */
+.app-footer{max-width:760px;margin:32px auto 0;padding:18px 16px 40px;border-top:1px solid var(--card-border);text-align:center}
+.footer-legal{display:flex;gap:.5rem;justify-content:center;align-items:center;flex-wrap:wrap;font-size:.78rem}
+.footer-legal a{color:var(--muted);text-decoration:underline}
+.footer-legal a:hover{color:var(--text)}
+.footer-legal span{color:var(--muted);opacity:.8}
+.footer-meta{margin-top:8px;font-size:.7rem;color:var(--muted);opacity:.85}
+.footer-meta a{color:var(--muted);text-decoration:underline}
+.footer-meta a:hover{color:var(--text)}
+.footer-account{margin-top:14px;font-size:.74rem}
+.footer-account>summary{list-style:none;cursor:pointer;color:var(--muted);display:inline-block;padding:.2rem .5rem}
+.footer-account>summary::-webkit-details-marker{display:none}
+.footer-account>summary:hover{color:var(--text)}
+.footer-account-body{margin-top:12px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.footer-acct-email{font-size:.72rem;color:var(--muted)}
+.footer-delete-link{background:none;border:none;color:var(--blood);text-decoration:underline;cursor:pointer;font-size:.74rem;font-family:inherit;padding:.2rem}
+.footer-delete-link:hover{color:#FF9A8A}
+/* Watchlist panel inputs follow existing .finput look */
+.wl-card{display:flex;justify-content:space-between;align-items:center;padding:.6rem .75rem;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:10px;margin-bottom:.4rem}
+.wl-card .wl-name{font-weight:700;color:var(--text)}
+.wl-card .wl-meta{color:var(--muted);font-size:.78rem}
+.wl-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.2rem;line-height:1}
+.wl-del:hover{color:var(--blood,#FF8F80)}
+.wl-badge-negotiate{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:8px;font-size:.62rem;font-weight:800;letter-spacing:.03em;background:rgba(255,107,87,0.108);color:var(--accent,#E9DFC9);border:1px solid rgba(255,107,87,0.21);vertical-align:middle}
+/* Pro-required modal */
+.pro-required-modal{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px}
+.pro-required-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px)}
+.pro-required-card{position:relative;background:#fff;color:#1f2937;border-radius:16px;padding:28px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);font-family:inherit}
+.pro-required-badge{display:inline-block;background:linear-gradient(135deg,#F2B45A,#D9963A);color:#fff;font-size:11px;font-weight:800;letter-spacing:.08em;padding:5px 12px;border-radius:7px;margin-bottom:14px}
+.pro-required-title{margin:0 0 8px;font-size:1.1rem;font-weight:800;color:#111827}
+.pro-required-desc{margin:0 0 10px;font-size:.9rem;color:#4b5563;line-height:1.55}
+.pro-required-price{margin:0 0 20px;font-size:.82rem;font-weight:700;color:#8A5A12}
+.pro-required-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.pro-required-actions button,.pro-required-actions a{padding:10px 18px;border-radius:9px;font-weight:700;font-size:.9rem;border:none;cursor:pointer;text-decoration:none;font-family:inherit;line-height:1;display:inline-block}
+.pro-required-cancel{background:#f3f4f6;color:#4b5563}
+.pro-required-cancel:hover{background:#e5e7eb}
+.pro-required-cta{background:linear-gradient(135deg,#F2B45A,#D9963A);color:#fff}
+.pro-required-cta:hover{filter:brightness(1.06)}
+/* ===== GUEST SAMPLE BURIAL (UX fixes 2026-11) ===== */
+.guest-box[hidden],#auth-box[hidden],.guest-note[hidden],.guest-alt[hidden],#guest-try[hidden],#guest-result[hidden]{display:none}
+.guest-head{font-family:var(--font-head);font-weight:700;font-size:1.3rem;color:var(--text);text-align:center;line-height:1.3;margin:0 0 6px}
+.guest-sub{font-size:.85rem;color:var(--muted);text-align:center;line-height:1.6;margin:0 0 18px}
+.guest-alt{display:block;margin:6px auto 0;font-size:12px}
+.guest-plot{margin:18px 0 4px}
+.guest-tomb-wrap{display:flex;justify-content:center;margin:0 0 14px}
+.guest-tomb{width:min(200px,70%);animation:tombRise .5s ease both}
+.guest-tomb .tomb-rip{font-family:var(--font-head);font-weight:700;font-size:.62rem;color:var(--muted);letter-spacing:.22em;margin:2px 0 4px}
+.guest-tomb .tomb-saved{font-size:1rem}
+.guest-bubble{font-family:var(--font-head);font-weight:700;font-size:.92rem;color:var(--text);text-align:center;line-height:1.5;background:rgba(255,107,87,0.08);border:1px solid rgba(255,107,87,0.18);border-radius:16px;padding:10px 14px;margin:0 0 14px}
+.guest-rank{font-size:.75rem;color:var(--muted);margin-top:6px;text-align:center;line-height:1.5}
+.guest-note{font-size:12px;color:var(--text);background:rgba(110,219,168,0.1);border:1px solid rgba(110,219,168,0.3);border-radius:10px;padding:9px 12px;margin-bottom:14px;line-height:1.5}
+/* ===== ONBOARDING QUESTION (UX fixes 2026-11) ===== */
+.onboard-box{max-height:88vh;overflow-y:auto}
+.ob-q{font-family:var(--font-head);font-weight:700;font-size:1.1rem;color:var(--text);margin:0 0 4px}
+.ob-sub{font-size:.8rem;color:var(--muted);line-height:1.6;margin:0 0 14px}
+.ob-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:14px}
+.ob-chip{min-height:40px;padding:8px 14px;border-radius:999px;border:1.5px solid var(--card-border);background:var(--card);color:var(--text);font-size:.8rem;font-weight:700;cursor:pointer;transition:all .15s}
+.ob-chip:hover:not(:disabled){border-color:rgba(255,107,87,0.4)}
+.ob-chip[aria-pressed="true"]{background:linear-gradient(135deg,var(--primary),var(--primary-d));color:var(--primary-ink);border-color:transparent}
+.ob-chip:disabled{opacity:.4;cursor:not-allowed}
+.ob-row{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:8px;margin-bottom:8px;text-align:left}
+.ob-row .finput{padding:9px 10px}
+.ob-row .finput.ob-bad{border-color:var(--blood)}
+#ob-rows:not(:empty){margin-bottom:6px}
+#ob-hint{text-align:center;margin:0 0 10px}
+</style>
+</head>
+<body>
+<div class="bg-mesh">
+  <div class="bg-blob blob1"></div>
+  <div class="bg-blob blob2"></div>
+  <div class="bg-blob blob3"></div>
+  <div class="bg-blob blob4"></div>
+</div>
+
+<!-- ===== BOOT =====
+     First paint on every load. The session is an HttpOnly cookie the page can't
+     read, so app.js holds this up for one GET /api/me and then shows the app or
+     the auth screen. The message starts empty on purpose: a visitor with no
+     session should never read words about signing in. -->
+<div class="boot-screen" id="boot-screen">
+  <div class="boot-dot"></div>
+  <p class="boot-msg" id="boot-msg" role="status" aria-live="polite"></p>
+</div>
+
+<!-- ===== AUTH =====
+     Left visible in the markup so the landing copy stays readable to anything that
+     does not run scripts. The boot screen above covers it on first paint, and the
+     boot gate in app.js decides within its first statements which of the two the
+     reader actually gets. Arriving here from the hub used to paint this whole card
+     for about half a second while hub-sso ran. -->
+<div class="auth-screen" id="auth-screen">
+  <div class="auth-split">
+    <div class="auth-promo" role="complementary" aria-label="What Subscription Graveyard does">
+      <div class="promo-title" style="position:relative">Bury your subscriptions.<br>Save your money.</div>
+      <div class="promo-sub" style="position:relative">Track every subscription you've canceled. Every one gets a tombstone. Watch your savings pile up.</div>
+      <div class="promo-keeper" style="margin-top:24px;position:relative">
+        <svg width="120" height="149" viewBox="0 0 200 248"><ellipse cx="100" cy="242" rx="50" ry="6" fill="rgba(0,0,0,.3)"/><path d="M55 120Q42 165 38 230h124Q158 165 145 120Z" fill="#231A1C"/><path d="M100 132L75 120l8 38 17 18 17-18 8-38Z" fill="var(--primary)" opacity=".25"/><path d="M100 132L68 120l-14 28Z" fill="#150F11"/><path d="M100 132L132 120l14 28Z" fill="#150F11"/><rect x="62" y="172" width="76" height="10" rx="5" fill="#150F11"/><rect x="88" y="169" width="24" height="16" rx="4" fill="var(--accent)" opacity=".6"/><rect x="94" y="100" width="12" height="18" rx="6" fill="#999"/><ellipse cx="100" cy="108" rx="46" ry="16" fill="#231A1C"/><ellipse cx="100" cy="78" rx="40" ry="36" fill="#999"/><path d="M54 108Q34 90 44 58Q56 38 82 44L62 108Z" fill="#2E2224"/><path d="M146 108Q166 90 156 58Q144 38 118 44L138 108Z" fill="#2E2224"/><path d="M82 44Q100 24 118 44L112 68Q100 60 88 68Z" fill="#150F11"/><ellipse cx="100" cy="72" rx="30" ry="24" fill="#888"/><ellipse cx="85" cy="72" rx="11" ry="13" fill="white"/><ellipse cx="115" cy="72" rx="11" ry="13" fill="white"/><circle cx="85" cy="72" r="6" fill="var(--primary)"/><circle cx="115" cy="72" r="6" fill="var(--primary)"/><circle cx="83" cy="70" r="2" fill="white" opacity=".7"/><circle cx="113" cy="70" r="2" fill="white" opacity=".7"/><path d="M90 92Q100 100 110 92" stroke="#555" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      </div>
+      <div class="auth-preview">
+        <div class="preview-label">preview: your graveyard</div>
+        <div class="preview-tombs">
+          <div class="tombstone tomb-mini"><svg viewBox="0 0 60 72" width="34" height="41"><path d="M8 72V28c0-14 10-24 22-24s22 10 22 24v44" fill="rgba(255,107,87,0.09)" stroke="rgba(215,205,200,0.6)" stroke-width="3"/><path d="M8 72h44" stroke="rgba(215,205,200,0.4)" stroke-width="2.5"/><path d="M24 32h12" stroke="rgba(215,205,200,0.5)" stroke-width="2.5" stroke-linecap="round"/><path d="M30 26v12" stroke="rgba(215,205,200,0.5)" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="30" cy="68" rx="18" ry="4" fill="rgba(110,219,168,0.06)"/></svg><div class="tomb-rip">RIP</div><div class="tomb-name">Netflix</div><div class="tomb-saved">saves $15/mo</div></div>
+          <div class="tombstone tomb-mini"><svg viewBox="0 0 60 72" width="34" height="41"><path d="M8 72V28c0-14 10-24 22-24s22 10 22 24v44" fill="rgba(255,107,87,0.09)" stroke="rgba(215,205,200,0.6)" stroke-width="3"/><path d="M8 72h44" stroke="rgba(215,205,200,0.4)" stroke-width="2.5"/><path d="M24 32h12" stroke="rgba(215,205,200,0.5)" stroke-width="2.5" stroke-linecap="round"/><path d="M30 26v12" stroke="rgba(215,205,200,0.5)" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="30" cy="68" rx="18" ry="4" fill="rgba(110,219,168,0.06)"/></svg><div class="tomb-rip">RIP</div><div class="tomb-name">Gym App</div><div class="tomb-saved">saves $30/mo</div></div>
+          <div class="tombstone tomb-mini"><svg viewBox="0 0 60 72" width="34" height="41"><path d="M8 72V28c0-14 10-24 22-24s22 10 22 24v44" fill="rgba(255,107,87,0.09)" stroke="rgba(215,205,200,0.6)" stroke-width="3"/><path d="M8 72h44" stroke="rgba(215,205,200,0.4)" stroke-width="2.5"/><path d="M24 32h12" stroke="rgba(215,205,200,0.5)" stroke-width="2.5" stroke-linecap="round"/><path d="M30 26v12" stroke="rgba(215,205,200,0.5)" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="30" cy="68" rx="18" ry="4" fill="rgba(110,219,168,0.06)"/></svg><div class="tomb-rip">RIP</div><div class="tomb-name">Meal Kits</div><div class="tomb-saved">saves $31/mo</div></div>
+        </div>
+        <div class="savings-bar-wrap">
+          <div class="bar-label"><span>savings</span><span>$76/mo buried</span></div>
+          <div class="savings-bar"><div class="savings-fill" style="width:30%"></div></div>
+        </div>
+      </div>
+    </div>
+    <!-- GUEST TRY (UX fixes 2026-11). A logged-out visitor buries ONE sample
+         subscription and watches the savings bar move BEFORE any sign-up form.
+         Nothing here talks to the server: the sample sits in localStorage
+         (sg_guest_sub, expires after 2 hours) until the person signs up or logs
+         in on this page, then goes through the normal authed POST
+         /api/subscriptions. Hidden in the markup; app.js decides who lands here. -->
+    <section class="auth-box guest-box" id="guest-box" role="main" aria-label="Try burying a subscription" hidden>
+      <div class="auth-logo" style="margin-bottom:18px">
+        <span class="t1 auth-logo-title"><a class="sg-brand" href="/" aria-label="Subscription Graveyard home"><svg class="sg-mark" width="28" height="28" viewBox="0 0 80 80" aria-hidden="true" focusable="false"><rect x="4" y="4" width="72" height="72" rx="20" fill="#FF6B57"/><path d="M24 62V36c0-9 7-16 16-16s16 7 16 16v26z" fill="#FFF4EF"/><path d="M46 36.5c0-3-2.7-5-6-5s-6 1.8-6 4.4c0 2.7 2.6 3.8 6 4.6 3.4.8 6 1.9 6 4.6 0 2.6-2.7 4.4-6 4.4s-6-2-6-5" stroke="#3A0D07" stroke-width="3.4" stroke-linecap="round" fill="none"/><path d="M40 27v27" stroke="#3A0D07" stroke-width="3.4" stroke-linecap="round"/><rect x="16" y="60" width="48" height="7" rx="3.5" fill="#6EDBA8"/></svg><span class="sg-word"><span class="sg-word-ink">Subscription</span><span class="sg-word-pop">Graveyard<svg class="sg-swoosh" viewBox="0 0 92 14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M4 9C24 4 60 4 88 8" stroke="#E9DFC9" stroke-width="6" stroke-linecap="round" fill="none"/></svg></span></span></a></span>
+      </div>
+      <div id="guest-try">
+        <h1 class="guest-head">What's one subscription you already canceled?</h1>
+        <p class="guest-sub">Give it a tombstone and see what it saves you. No account yet.</p>
+        <form id="guest-form" novalidate>
+          <div class="auth-fg"><label class="auth-label" for="guest-name">Subscription</label><input class="auth-input" type="text" id="guest-name" name="guest-name" maxlength="60" placeholder="e.g. Netflix" autocomplete="off"/></div>
+          <div class="auth-fg"><label class="auth-label" for="guest-cost">What it cost a month ($)</label><input class="auth-input" type="number" id="guest-cost" name="guest-cost" step="0.01" min="0.01" max="10000" inputmode="decimal" placeholder="15.99"/></div>
+          <div id="guest-err" class="auth-err" role="alert"></div>
+          <button class="auth-btn" type="submit" id="guest-bury-btn">Bury it</button>
+        </form>
+        <div class="guest-plot savings-bar-wrap" aria-hidden="true">
+          <div class="bar-label"><span>savings</span><span>$0/mo</span></div>
+          <div class="savings-bar"><div class="savings-fill" style="width:0%"></div></div>
+        </div>
+        <button class="auth-forgot guest-alt" type="button" data-action="guest-login">Already have an account? Log in</button>
+      </div>
+      <div id="guest-result" hidden>
+        <div class="guest-tomb-wrap">
+          <div class="tombstone tomb-fresh guest-tomb">
+            <div class="tomb-cross"><svg viewBox="0 0 60 72" width="50" height="60" aria-hidden="true"><path d="M8 72V28c0-14 10-24 22-24s22 10 22 24v44" fill="rgba(255,107,87,0.09)" stroke="rgba(215,205,200,0.6)" stroke-width="3"/><path d="M8 72h44" stroke="rgba(215,205,200,0.4)" stroke-width="2.5"/><path d="M24 32h12" stroke="rgba(215,205,200,0.5)" stroke-width="2.5" stroke-linecap="round"/><path d="M30 26v12" stroke="rgba(215,205,200,0.5)" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="30" cy="68" rx="18" ry="4" fill="rgba(110,219,168,0.06)"/></svg></div>
+            <div class="tomb-rip">RIP</div>
+            <div class="tomb-name" id="guest-tomb-name"></div>
+            <div class="tomb-saved" id="guest-tomb-saved"></div>
+            <div class="tomb-saved-label">every month from now on</div>
+          </div>
+        </div>
+        <div class="guest-bubble" id="guest-bubble" role="status"></div>
+        <div class="savings-bar-wrap">
+          <div class="bar-label"><span>savings</span><span id="guest-amt">$0/mo</span></div>
+          <div class="savings-bar"><div class="savings-fill" id="guest-fill" style="width:0%"></div></div>
+          <div class="guest-rank" id="guest-rank"></div>
+        </div>
+        <p class="guest-sub" style="margin-top:16px">Make an account on the free plan so it saves. This tombstone moves in with you and keeps counting.</p>
+        <button class="auth-btn" type="button" data-action="guest-signup">Save it on the free plan</button>
+        <button class="auth-forgot guest-alt" type="button" data-action="guest-redo">Change it</button>
+        <button class="auth-forgot guest-alt" type="button" data-action="guest-login" style="margin-top:0">Already have an account? Log in</button>
+      </div>
+      <div class="auth-privacy">
+        <a href="/legal/privacy">Privacy Policy</a>
+        &middot;
+        <a href="/legal/terms">Terms</a>
+        &middot;
+        <a href="/legal/accessibility">Accessibility</a>
+        &middot;
+        <a href="/legal/do-not-sell">Do Not Sell or Share My Info</a> &middot; <a href="https://github.com/jensoltys/subscriptiongraveyard" target="_blank" rel="noopener noreferrer">Open source</a>
+      </div>
+      <div class="auth-meta">Contact <a href="mailto:support@example.com">support@example.com</a> &middot; &copy; <span class="jbi-year">2026</span> YOUR COMPANY NAME &middot; YOUR BUSINESS ADDRESS &middot; Not affiliated with or endorsed by Netflix, Disney+, Hulu or any service named here. Their names are trademarks of their respective owners.</div>
+    </section>
+    <div class="auth-box" id="auth-box" role="main">
+      <div class="auth-keeper-mobile">
+        <svg width="80" height="99" viewBox="0 0 200 248"><ellipse cx="100" cy="242" rx="50" ry="6" fill="rgba(0,0,0,.3)"/><path d="M55 120Q42 165 38 230h124Q158 165 145 120Z" fill="#231A1C"/><rect x="94" y="100" width="12" height="18" rx="6" fill="#999"/><ellipse cx="100" cy="108" rx="46" ry="16" fill="#231A1C"/><ellipse cx="100" cy="78" rx="40" ry="36" fill="#999"/><path d="M54 108Q34 90 44 58Q56 38 82 44L62 108Z" fill="#2E2224"/><path d="M146 108Q166 90 156 58Q144 38 118 44L138 108Z" fill="#2E2224"/><path d="M82 44Q100 24 118 44L112 68Q100 60 88 68Z" fill="#150F11"/><ellipse cx="100" cy="72" rx="30" ry="24" fill="#888"/><ellipse cx="85" cy="72" rx="11" ry="13" fill="white"/><ellipse cx="115" cy="72" rx="11" ry="13" fill="white"/><circle cx="85" cy="72" r="6" fill="var(--primary)"/><circle cx="115" cy="72" r="6" fill="var(--primary)"/><circle cx="83" cy="70" r="2" fill="white" opacity=".7"/><circle cx="113" cy="70" r="2" fill="white" opacity=".7"/><path d="M90 92Q100 100 110 92" stroke="#555" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        <div class="auth-keeper-bubble">the crypt keeper sees all...</div>
+        <div class="auth-mobile-pitch">track every subscription you bury and watch the savings pile up. start with a free plan.</div>
+        <div class="auth-preview auth-preview-mobile">
+          <div class="preview-label">preview: your graveyard</div>
+          <div class="preview-tombs">
+            <div class="tombstone tomb-mini"><svg viewBox="0 0 60 72" width="34" height="41"><path d="M8 72V28c0-14 10-24 22-24s22 10 22 24v44" fill="rgba(255,107,87,0.09)" stroke="rgba(215,205,200,0.6)" stroke-width="3"/><path d="M8 72h44" stroke="rgba(215,205,200,0.4)" stroke-width="2.5"/><path d="M24 32h12" stroke="rgba(215,205,200,0.5)" stroke-width="2.5" stroke-linecap="round"/><path d="M30 26v12" stroke="rgba(215,205,200,0.5)" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="30" cy="68" rx="18" ry="4" fill="rgba(110,219,168,0.06)"/></svg><div class="tomb-rip">RIP</div><div class="tomb-name">Netflix</div><div class="tomb-saved">saves $15/mo</div></div>
+            <div class="tombstone tomb-mini"><svg viewBox="0 0 60 72" width="34" height="41"><path d="M8 72V28c0-14 10-24 22-24s22 10 22 24v44" fill="rgba(255,107,87,0.09)" stroke="rgba(215,205,200,0.6)" stroke-width="3"/><path d="M8 72h44" stroke="rgba(215,205,200,0.4)" stroke-width="2.5"/><path d="M24 32h12" stroke="rgba(215,205,200,0.5)" stroke-width="2.5" stroke-linecap="round"/><path d="M30 26v12" stroke="rgba(215,205,200,0.5)" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="30" cy="68" rx="18" ry="4" fill="rgba(110,219,168,0.06)"/></svg><div class="tomb-rip">RIP</div><div class="tomb-name">Gym App</div><div class="tomb-saved">saves $30/mo</div></div>
+          </div>
+          <div class="savings-bar-wrap">
+            <div class="bar-label"><span>savings</span><span>$45/mo buried</span></div>
+            <div class="savings-bar"><div class="savings-fill" style="width:22%"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="auth-logo">
+        <span class="t1 auth-logo-title"><a class="sg-brand" href="/" aria-label="Subscription Graveyard home"><svg class="sg-mark" width="28" height="28" viewBox="0 0 80 80" aria-hidden="true" focusable="false"><rect x="4" y="4" width="72" height="72" rx="20" fill="#FF6B57"/><path d="M24 62V36c0-9 7-16 16-16s16 7 16 16v26z" fill="#FFF4EF"/><path d="M46 36.5c0-3-2.7-5-6-5s-6 1.8-6 4.4c0 2.7 2.6 3.8 6 4.6 3.4.8 6 1.9 6 4.6 0 2.6-2.7 4.4-6 4.4s-6-2-6-5" stroke="#3A0D07" stroke-width="3.4" stroke-linecap="round" fill="none"/><path d="M40 27v27" stroke="#3A0D07" stroke-width="3.4" stroke-linecap="round"/><rect x="16" y="60" width="48" height="7" rx="3.5" fill="#6EDBA8"/></svg><span class="sg-word"><span class="sg-word-ink">Subscription</span><span class="sg-word-pop">Graveyard<svg class="sg-swoosh" viewBox="0 0 92 14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M4 9C24 4 60 4 88 8" stroke="#E9DFC9" stroke-width="6" stroke-linecap="round" fill="none"/></svg></span></span></a></span>
+        <span class="t2">bury your subscriptions. resurrect your budget.</span>
+      </div>
+      <div class="guest-note" id="guest-carry-note" role="status" hidden></div>
+      <div class="auth-tabs">
+        <button class="auth-tab active">Log In</button>
+        <button class="auth-tab">Sign Up</button>
+      </div>
+      <div id="auth-err" class="auth-err"></div>
+      <div id="auth-suc" class="auth-suc"></div>
+      <form id="auth-form" novalidate>
+        <div class="auth-fg"><label class="auth-label" for="auth-email">Email</label><input class="auth-input" type="email" id="auth-email" name="email" required autocomplete="username"/></div>
+        <div class="auth-fg"><label class="auth-label" for="auth-pw">Password</label><input class="auth-input" type="password" id="auth-pw" name="password" required minlength="10" maxlength="200" autocomplete="current-password"/><div id="auth-pw-hint" style="display:none;font-size:11px;color:var(--muted);margin-top:4px">10–200 characters.</div></div>
+        <div class="auth-fg" id="auth-pw2-wrap" style="display:none"><label class="auth-label" for="auth-pw2">Confirm Password</label><input class="auth-input" type="password" id="auth-pw2" name="confirm-password" maxlength="200" autocomplete="new-password"/></div>
+        <button class="auth-btn" type="submit" id="auth-submit-btn">Log In</button>
+        <div id="signup-consent" style="display:none;font-size:11px;color:var(--muted);margin-top:10px;text-align:center;line-height:1.5">By creating an account, you agree to our <a href="/legal/terms" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Terms</a> and <a data-action="show-privacy" style="color:inherit;text-decoration:underline;cursor:pointer">Privacy Policy</a>.</div>
+      </form>
+      <div id="verify-block" style="display:none">
+        <p style="font-size:13px;color:var(--primary);margin:0 0 14px;line-height:1.5">Enter the 6-digit code below to finish setting up your account.</p>
+        <div class="auth-fg">
+          <label class="auth-label" for="verify-code-input">Verification code</label>
+          <input class="auth-input" type="text" id="verify-code-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder="123456" style="letter-spacing:6px;text-align:center;font-size:1.2rem"/>
+        </div>
+        <div class="auth-fg" id="verify-pw-wrap" style="display:none">
+          <label class="auth-label" for="verify-pw-input">Your password</label>
+          <input class="auth-input" type="password" id="verify-pw-input" maxlength="200" autocomplete="current-password"/>
+        </div>
+        <button class="auth-btn" type="button" id="verify-code-btn">Verify and continue</button>
+        <button class="auth-forgot" type="button" id="verify-resend-btn" style="margin-top:10px">Resend code</button>
+      </div>
+      <button class="auth-forgot" type="button" id="auth-forgot-btn">Forgot password?</button>
+      <button class="auth-forgot guest-alt" type="button" id="guest-try-link" data-action="guest-try">New here? Try burying one first</button>
+      <div class="auth-privacy">
+        <a href="/legal/privacy">Privacy Policy</a>
+        &middot;
+        <a href="/legal/terms">Terms</a>
+        &middot;
+        <a href="/legal/accessibility">Accessibility</a>
+        &middot;
+        <a href="/legal/do-not-sell">Do Not Sell or Share My Info</a> &middot; <a href="https://github.com/jensoltys/subscriptiongraveyard" target="_blank" rel="noopener noreferrer">Open source</a>
+      </div>
+      <div class="auth-meta">Contact <a href="mailto:support@example.com">support@example.com</a> &middot; &copy; <span class="jbi-year">2026</span> YOUR COMPANY NAME &middot; YOUR BUSINESS ADDRESS &middot; Not affiliated with or endorsed by Netflix, Disney+, Hulu or any service named here. Their names are trademarks of their respective owners.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== RESET ===== -->
+<div class="reset-screen" id="reset-screen">
+  <div class="auth-box" role="main" style="max-width:380px;border-radius:24px">
+    <div class="auth-logo"><span class="t1" style="font-size:1.3rem">Set new password</span></div>
+    <div id="reset-err" class="auth-err"></div>
+    <div class="auth-fg"><label class="auth-label" for="reset-pw">New Password</label><input class="auth-input" type="password" id="reset-pw" name="new-password" required minlength="10" maxlength="200" autocomplete="new-password"/></div>
+    <button class="auth-btn" type="button" id="reset-confirm-btn">Reset Password</button>
+    <div class="auth-privacy">
+      <a href="/legal/privacy">Privacy Policy</a> &middot; <a href="/legal/terms">Terms</a> &middot; <a href="/legal/do-not-sell">Do Not Sell or Share My Info</a> &middot; <a href="https://github.com/jensoltys/subscriptiongraveyard" target="_blank" rel="noopener noreferrer">Open source</a>
+    </div>
+    <div class="auth-meta">Contact <a href="mailto:support@example.com">support@example.com</a> &middot; &copy; <span class="jbi-year">2026</span> YOUR COMPANY NAME &middot; YOUR BUSINESS ADDRESS &middot; Not affiliated with or endorsed by Netflix, Disney+, Hulu or any service named here. Their names are trademarks of their respective owners.</div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div class="app" id="app-outer" style="display:none">
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="app-header-top">
+      <div class="app-header-actions">
+        <div style="display:flex;gap:8px;align-items:center">
+          <span id="pro-badge-region" class="pro-badge-region">
+            <span class="pro-badge">PRO</span>
+            <span id="pro-until-text" class="pro-until-text"></span>
+          </span>
+          <a id="unlock-pro-btn" class="unlock-pro-btn" href="https://subscriptiongraveyard.app" target="_blank" rel="noopener">Go Pro</a>
+          <button class="helpbtn" type="button" id="hdr-help" aria-label="How Subscription Graveyard works">?</button>
+          <button class="hdr-link" type="button" id="hdr-logout-btn">log out</button>
+        </div>
+        <div class="sync-status" style="font-size:10px;color:var(--muted);display:flex;align-items:center;gap:4px"><span class="sync-dot" id="sync-dot" style="width:6px;height:6px;border-radius:50%;background:var(--money);box-shadow:0 0 4px var(--primary-glow)"></span> <span id="sync-txt">Synced</span></div>
+      </div>
+    </div>
+    <h1 class="app-title"><a class="sg-brand" href="/" aria-label="Subscription Graveyard home"><svg class="sg-mark" width="60" height="60" viewBox="0 0 80 80" aria-hidden="true" focusable="false"><rect x="4" y="4" width="72" height="72" rx="20" fill="#FF6B57"/><path d="M24 62V36c0-9 7-16 16-16s16 7 16 16v26z" fill="#FFF4EF"/><path d="M46 36.5c0-3-2.7-5-6-5s-6 1.8-6 4.4c0 2.7 2.6 3.8 6 4.6 3.4.8 6 1.9 6 4.6 0 2.6-2.7 4.4-6 4.4s-6-2-6-5" stroke="#3A0D07" stroke-width="3.4" stroke-linecap="round" fill="none"/><path d="M40 27v27" stroke="#3A0D07" stroke-width="3.4" stroke-linecap="round"/><rect x="16" y="60" width="48" height="7" rx="3.5" fill="#6EDBA8"/></svg><span class="sg-word"><span class="sg-word-ink">Subscription</span><span class="sg-word-pop">Graveyard<svg class="sg-swoosh" viewBox="0 0 92 14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M4 9C24 4 60 4 88 8" stroke="#E9DFC9" stroke-width="7" stroke-linecap="round" fill="none"/></svg></span></span></a></h1>
+    <div class="app-subtitle">rest in savings</div>
+  </header>
+
+  <!-- KEEPER PANEL -->
+  <aside class="keeper-panel">
+    <div class="speech-bubble" id="speechBubble">pssst... hey.<br>got any subscriptions to bury?</div>
+    <div class="character-wrap">
+      <svg id="keeperSVG" class="keeper-char state-idle" viewBox="0 0 200 248" width="200" height="248">
+        <!-- Shadow -->
+        <ellipse cx="100" cy="242" rx="56" ry="6" fill="rgba(0,0,0,.35)"/>
+        <!-- ROBE BODY -->
+        <path d="M55 120Q42 165 38 230L162 230Q158 165 145 120Z" fill="#231A1C"/>
+        <!-- Robe inner lining V -->
+        <path d="M100 132L75 120l8 38 17 18 17-18 8-38Z" fill="var(--primary)" opacity=".2"/>
+        <!-- Robe lapels -->
+        <path d="M100 132L68 120 54 148Z" fill="#150F11"/>
+        <path d="M100 132L132 120 146 148Z" fill="#150F11"/>
+        <!-- Belt -->
+        <rect x="62" y="172" width="76" height="10" rx="5" fill="#150F11"/>
+        <rect x="88" y="169" width="24" height="16" rx="4" fill="var(--accent)" opacity=".6"/>
+        <rect x="97" y="175" width="6" height="4" rx="2" fill="#0E0B0C"/>
+        <!-- Robe buttons -->
+        <circle cx="100" cy="155" r="3" fill="var(--accent)" opacity=".4"/>
+        <circle cx="100" cy="167" r="3" fill="var(--accent)" opacity=".3"/>
+        <!-- Robe collar -->
+        <path d="M74 116L100 134 126 116" stroke="#4A3235" stroke-width="2" fill="none"/>
+        <!-- Left arm -->
+        <path d="M56 126Q36 148 32 176" stroke="#231A1C" stroke-width="22" stroke-linecap="round" fill="none"/>
+        <!-- Right arm (holding lantern) -->
+        <path d="M144 126Q168 146 170 170" stroke="#231A1C" stroke-width="22" stroke-linecap="round" fill="none"/>
+        <!-- Left hand (bony) -->
+        <circle cx="30" cy="178" r="9" fill="#c8c3d4"/>
+        <circle cx="26" cy="174" r="4" fill="#aaa"/>
+        <circle cx="34" cy="173" r="4" fill="#aaa"/>
+        <circle cx="25" cy="181" r="4" fill="#aaa"/>
+        <!-- Right hand -->
+        <circle cx="172" cy="172" r="9" fill="#c8c3d4"/>
+        <circle cx="176" cy="168" r="4" fill="#aaa"/>
+        <circle cx="168" cy="167" r="4" fill="#aaa"/>
+        <circle cx="178" cy="175" r="4" fill="#aaa"/>
+        <!-- Lantern -->
+        <rect x="166" y="148" width="12" height="4" rx="2" fill="#aaa"/>
+        <path d="M168 148v-8c0-2 2-4 4-4s4 2 4 4v8" fill="none" stroke="#aaa" stroke-width="1.5"/>
+        <rect x="167" y="152" width="10" height="14" rx="2" fill="var(--lamp)" opacity=".3"/>
+        <circle cx="172" cy="158" r="3" fill="var(--lamp)" opacity=".6">
+          <animate attributeName="opacity" values=".6;.3;.6" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="172" cy="158" r="6" fill="var(--lamp)" opacity=".1">
+          <animate attributeName="r" values="6;8;6" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <!-- NECK -->
+        <rect x="90" y="98" width="20" height="18" rx="8" fill="#c8c3d4"/>
+        <!-- HOOD BASE -->
+        <ellipse cx="100" cy="108" rx="46" ry="16" fill="#231A1C"/>
+        <!-- HEAD -->
+        <ellipse cx="100" cy="78" rx="40" ry="36" fill="#c8c3d4"/>
+        <!-- Hood drapes -->
+        <path d="M54 108Q34 90 44 58Q56 38 82 44L62 108Z" fill="#2E2224"/>
+        <path d="M146 108Q166 90 156 58Q144 38 118 44L138 108Z" fill="#2E2224"/>
+        <!-- Hood top -->
+        <path d="M82 44Q100 24 118 44L112 68Q100 60 88 68Z" fill="#150F11"/>
+        <!-- Face shadow -->
+        <ellipse cx="100" cy="72" rx="30" ry="24" fill="#b0aab8"/>
+        <!-- EYES (big, creepy, glowing green) -->
+        <ellipse cx="85" cy="72" rx="12" ry="14" fill="white"/>
+        <ellipse cx="115" cy="72" rx="12" ry="14" fill="white"/>
+        <circle id="leftIris" cx="85" cy="73" r="7" fill="var(--primary)"/>
+        <circle id="rightIris" cx="115" cy="73" r="7" fill="var(--primary)"/>
+        <circle cx="82" cy="70" r="2.5" fill="white" opacity=".7"/>
+        <circle cx="112" cy="70" r="2.5" fill="white" opacity=".7"/>
+        <!-- Eye glow -->
+        <circle cx="85" cy="73" r="10" fill="var(--primary)" opacity=".08">
+          <animate attributeName="opacity" values=".08;.15;.08" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="115" cy="73" r="10" fill="var(--primary)" opacity=".08">
+          <animate attributeName="opacity" values=".08;.15;.08" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Bottom lids (creepy half-droop) -->
+        <rect id="leftBlink" x="73" y="80" width="24" height="0" rx="4" fill="#b0aab8"/>
+        <rect id="rightBlink" x="103" y="80" width="24" height="0" rx="4" fill="#b0aab8"/>
+        <!-- Mouth (creepy smirk) -->
+        <path id="mouthPath" d="M88 94Q100 104 112 94" stroke="#666" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- Eyebrows -->
+        <path d="M76 60Q85 55 96 62" stroke="#888" stroke-width="1.5" fill="none"/>
+        <path d="M124 60Q115 55 104 62" stroke="#888" stroke-width="1.5" fill="none"/>
+        <!-- Cheek blush -->
+        <circle cx="72" cy="82" r="6" fill="var(--primary)" opacity=".08"/>
+        <circle cx="128" cy="82" r="6" fill="var(--primary)" opacity=".08"/>
+      </svg>
+    </div>
+    <!-- Savings progress bar -->
+    <div class="savings-bar-wrap">
+      <div class="bar-label"><span>savings</span><span id="savingsPct">$0/mo</span></div>
+      <div class="savings-bar"><div class="savings-fill" id="savingsFill" style="width:0%"></div></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <!-- Shown by loadAppData() when the first load fails; Retry runs it again. -->
+    <div id="load-banner" class="load-banner" role="alert" style="display:none"><span id="load-banner-msg"></span><button type="button" class="btn btn-sm btn-green" id="load-retry-btn">Retry</button></div>
+    <div class="tabs-wrap">
+      <div class="tabs">
+        <button class="tab active" type="button" data-tab="graveyard" data-tooltip="View your buried subscriptions">Graveyard</button>
+        <button class="tab" type="button" data-tab="deathrow" data-tooltip="Subs you're thinking of canceling">Last Rites</button>
+        <button class="tab" type="button" data-tab="dashboard" data-tooltip="Your savings at a glance">Stats</button>
+        <button class="tab" type="button" data-tab="add" data-tooltip="Log a canceled subscription">Bury</button>
+        <button class="tab locked-feature pro-feature" type="button" data-tab="watchlist" data-tooltip="Get warned before active subs renew"><span class="pro-star" title="Pro feature"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2l2.92 6.26 6.86.84-5.06 4.73 1.32 6.78L12 17.27l-6.04 3.34 1.32-6.78L2.22 9.1l6.86-.84z"/></svg></span><span class="tab-lbl-full">Renewal Alerts</span><span class="tab-lbl-short">Alerts</span></button>
+      </div>
+    </div>
+
+    <!-- App help sits ABOVE the promo card and is a separate array:
+         TIPS teach the app, GENERAL_NUDGES sell something. Never one mixed list. -->
+    <div class="panel active" id="panel-graveyard"><div id="graveyard-content"></div><div id="app-tip"></div><div id="daily-tip"></div></div>
+
+    <div class="panel" id="panel-deathrow">
+      <div class="sec-lbl">on last rites</div>
+      <div id="deathrow-list"></div>
+      <div class="card" style="margin-top:12px">
+        <div class="sec-lbl">add to last rites</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:12px">Thinking about canceling? Add it here to line up your next burial.</div>
+        <div class="fg"><label class="flbl" for="dr-name">Subscription name</label><input class="finput" id="dr-name" name="dr-name" placeholder="e.g. Hulu"/></div>
+        <div class="frow"><div class="fg"><label class="flbl" for="dr-cost">Monthly cost ($)</label><input class="finput" id="dr-cost" name="dr-cost" type="number" step="0.01" min="0" placeholder="14.99"/></div><div class="fg"><label class="flbl" for="dr-cat">Category</label><select class="fsel" id="dr-cat" name="dr-cat"></select></div></div>
+        <div class="fg"><label class="flbl" for="dr-notes">Why cancel?</label><input class="finput" id="dr-notes" name="dr-notes" placeholder="Never use it anymore..."/></div>
+        <button class="btn btn-amber" type="button" id="dr-add-btn">Add to Last Rites</button>
+        <p class="sg-hint">Last Rites is just a shortlist. Nothing is canceled until you say so.</p>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-dashboard"><div id="dashboard-content"></div></div>
+
+    <div class="panel" id="panel-add">
+      <div class="card">
+        <div class="sec-lbl">bury a subscription</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:14px">Already canceled? Log it here and start tracking your savings.</div>
+        <div class="fg"><label class="flbl" for="add-name">Name</label><input class="finput" id="add-name" name="add-name" placeholder="e.g. Netflix"/></div>
+        <div class="frow"><div class="fg"><label class="flbl" for="add-cost">Monthly cost ($)</label><input class="finput" id="add-cost" name="add-cost" type="number" step="0.01" min="0" placeholder="15.99"/></div><div class="fg"><label class="flbl" for="add-cat">Category</label><select class="fsel" id="add-cat" name="add-cat"></select></div></div>
+        <div class="fg"><label class="flbl" for="add-cancelled">Date canceled</label><input class="finput" id="add-cancelled" name="add-cancelled" type="date"/></div>
+        <div class="fg"><label class="flbl" for="add-reason">Why? (optional)</label><input class="finput" id="add-reason" name="add-reason" placeholder="Too expensive..."/></div>
+        <button class="btn btn-green" type="button" id="bury-sub-btn">Bury It</button>
+        <p class="sg-hint">Set the real date you canceled and the savings count from then, not from today.</p>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-watchlist">
+      <div class="sec-lbl">renewal watchlist <span class="pro-tag"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2l2.92 6.26 6.86.84-5.06 4.73 1.32 6.78L12 17.27l-6.04 3.34 1.32-6.78L2.22 9.1l6.86-.84z"/></svg>Pro</span></div>
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:12px">Get warned before active subscriptions auto-renew. Add anything you want to remember to review before it bills.</div>
+      <div id="watchlist-items"></div>
+      <div class="card" style="margin-top:12px">
+        <div class="sec-lbl">add to watchlist</div>
+        <form id="watchlist-form">
+          <div class="fg"><label class="flbl" for="wl-name">Service name</label><input class="finput" id="wl-name" name="name" placeholder="e.g. Netflix" required/></div>
+          <div class="frow"><div class="fg"><label class="flbl" for="wl-cost">Monthly cost ($)</label><input class="finput" id="wl-cost" name="monthly_cost" type="number" step="0.01" min="0" placeholder="14.99" required/></div><div class="fg"><label class="flbl" for="wl-date">Next renewal date</label><input class="finput" id="wl-date" name="next_renewal_date" type="date" required/></div></div>
+          <div class="frow"><div class="fg"><label class="flbl" for="wl-cycle">Billing cycle</label><select class="finput" id="wl-cycle" name="billing_cycle"><option value="monthly" selected>Monthly</option><option value="annual">Annual</option><option value="quarterly">Quarterly</option><option value="weekly">Weekly</option></select></div><div class="fg"><label class="flbl" for="wl-mode">When it renews</label><select class="finput" id="wl-mode" name="reminder_mode"><option value="cancel" selected>Remind me to cancel</option><option value="negotiate">Remind me to negotiate a deal</option></select></div></div>
+          <div class="fg"><label class="flbl" for="wl-url">Cancel URL (optional)</label><input class="finput" id="wl-url" name="cancel_url" placeholder="https://..."/></div>
+          <button type="submit" class="btn btn-amber">Add to Watchlist</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER: legal links + tucked-away account controls -->
+  <footer class="app-footer">
+    <nav class="footer-legal" aria-label="More apps" style="margin-bottom:8px"><a href="https://jenbuiltit.com/app-hub" style="font-weight:700">Browse all apps in the App Hub</a></nav>
+    <nav class="footer-legal" aria-label="Legal and program links">
+      <a href="/guide">Guide</a>
+      <span>&middot;</span>
+      <a href="/legal/privacy">Privacy</a>
+      <span>&middot;</span>
+      <a href="/legal/terms">Terms</a>
+      <span>&middot;</span>
+      <a href="/legal/accessibility">Accessibility</a>
+      <span>&middot;</span>
+      <a href="/legal/do-not-sell">Do Not Sell or Share My Info</a>
+      <span>&middot;</span>
+      <a href="https://github.com/jensoltys/subscriptiongraveyard" target="_blank" rel="noopener noreferrer">Open source</a>
+    </nav>
+    <div class="footer-meta">Contact <a href="mailto:support@example.com">support@example.com</a> &middot; &copy; <span class="jbi-year">2026</span> YOUR COMPANY NAME &middot; YOUR BUSINESS ADDRESS &middot; Not affiliated with or endorsed by Netflix, Disney+, Hulu or any service named here. Their names are trademarks of their respective owners.</div>
+    <details class="footer-account">
+      <summary>Account settings</summary>
+      <div class="footer-account-body">
+        <div class="footer-acct-email">Signed in as <strong id="acct-email"></strong></div>
+        <button class="btn btn-sm" type="button" data-action="export-data" style="background:var(--card);color:var(--muted);border:1px solid var(--card-border)">Export my data</button>
+        <button class="btn btn-sm" type="button" data-action="open-password-modal" style="background:var(--card);color:var(--muted);border:1px solid var(--card-border)">Change password</button>
+        <button class="footer-delete-link" type="button" data-action="open-delete-modal">Delete my account</button>
+      </div>
+    </details>
+  </footer>
+</div>
+
+<!-- ONBOARDING (UX fixes 2026-11): asks what they've already canceled and turns
+     the picks into their first tombstones through the normal POST /api/subscriptions.
+     The API needs a real monthly price, so each pick gets its own price box. Skippable. -->
+<div class="onboard-overlay" id="onboard-overlay" role="dialog" aria-modal="true" aria-labelledby="onboard-title">
+  <div class="onboard-box">
+    <h2 id="onboard-title" style="font-family:var(--font-head);font-weight:700;font-size:1.4rem;color:var(--text);margin-bottom:12px">welcome to the graveyard</h2>
+    <p class="ob-q" id="ob-q">What have you already canceled?</p>
+    <p class="ob-sub">Tap any you've dropped. Each one gets a tombstone, and its savings count from today.</p>
+    <div class="ob-chips" id="ob-chips" role="group" aria-labelledby="ob-q"></div>
+    <div id="ob-rows"></div>
+    <p class="sg-hint" id="ob-hint"></p>
+    <div id="ob-err" class="auth-err" role="alert" style="text-align:left"></div>
+    <button class="btn btn-green" type="button" id="ob-bury-btn" disabled>Bury them</button>
+    <button class="auth-forgot" type="button" id="onboard-start-btn" style="display:block;margin:6px auto 0">Skip for now</button>
+  </div>
+</div>
+
+<!-- CELEBRATION -->
+<div class="celeb-overlay" id="celeb-overlay">
+  <div class="celeb-box">
+    <div class="celeb-creature" id="celeb-creature"></div>
+    <div class="celeb-title" id="celeb-title"></div>
+    <div class="celeb-msg" id="celeb-msg"></div>
+    <div id="celeb-nudge"></div>
+    <button class="celeb-close" type="button">back to the graveyard</button>
+  </div>
+</div>
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+<!-- PRIVACY -->
+<div class="modal-overlay" id="privacy-modal">
+  <div class="modal-box">
+    <h3>privacy policy</h3>
+    <p style="font-size:.72rem;color:var(--muted);margin-bottom:8px">Last updated: August 1, 2026 &middot; Operator: YOUR COMPANY NAME, YOUR BUSINESS ADDRESS</p>
+    <p>Subscription Graveyard stores your email (for login), a salted hash of your password, the time zone your browser reports (so renewal warnings arrive on the right day), the canceled subscriptions you bury ("Graveyard"), the planned cancellations you track ("Last Rites"), the upcoming renewals you track ("Renewal Watchlist"), and rate-limit records keyed by your IP or email so nobody can brute-force your account.</p>
+    <p><strong>Who we share with.</strong> Cloudflare hosts the app and database. Resend sends transactional emails (verification, password reset, renewal warnings). If this site is connected to a Pro hub, that hub issues the signed token that unlocks Pro. We do NOT sell your personal data and do NOT share it with advertisers.</p>
+    <p><strong>How long we keep it.</strong> Account + content data: as long as your account exists. Security data (rate-limit rows, failed logins): purged automatically when the window expires. There is no newsletter sign-up in this app and we do not send marketing email.</p>
+    <p><strong>Your rights (GDPR, UK GDPR, CCPA/CPRA).</strong> You may access, correct, export, or delete your data. Open <strong>Account settings</strong> at the bottom of the app: <strong>Export my data</strong> downloads a JSON copy, and <strong>Delete my account</strong> permanently deletes everything. For other requests email <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+    <p><strong>Children.</strong> The Service isn't meant for anyone under 18, and we don't knowingly collect personal data from them. If you believe a child has created an account, email <a href="mailto:privacy@example.com">privacy@example.com</a> and we will delete it.</p>
+    <p>Some tips link to other apps and posts by Jen Built It, the app's maker.</p>
+    <p style="margin-top:12px"><a href="/legal/privacy" style="color:var(--primary)">Read the full privacy policy</a> &middot; <a href="/legal/do-not-sell" style="color:var(--primary)">Do Not Sell or Share My Personal Information</a> &middot; <a href="https://github.com/jensoltys/subscriptiongraveyard" target="_blank" rel="noopener noreferrer">Open source</a></p>
+    <button class="btn btn-green btn-sm" type="button" id="privacy-close-btn" style="margin-top:12px">close</button>
+  </div>
+</div>
+
+<!-- DELETE -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal-box" style="max-width:380px;text-align:center">
+    <h3 style="color:var(--blood)">delete account</h3>
+    <p>This permanently deletes your account and all data. Cannot be undone.</p>
+    <p data-pro-on hidden style="font-size:.75rem;color:var(--muted);margin-top:8px"><strong>Paying for Pro?</strong> Deleting your Graveyard account doesn't cancel it. Cancel Pro wherever you bought it.</p>
+    <div id="delete-pw-row">
+      <p style="font-size:.75rem;color:var(--muted);margin-top:8px">Enter your current password to confirm.</p>
+      <div class="auth-fg" style="margin-top:12px;text-align:left">
+        <label class="sr-only" for="delete-pw">Current password</label>
+        <input class="auth-input" type="password" id="delete-pw" autocomplete="current-password" placeholder="Current password" minlength="10" maxlength="200"/>
+      </div>
+      <button class="auth-forgot" type="button" id="delete-use-hub-btn" data-pro-on hidden>Signed up through the App Hub and never set a password?</button>
+    </div>
+    <div id="delete-hub-row" style="display:none">
+      <p style="font-size:.75rem;color:var(--muted);margin-top:8px">No password needed. We'll check the App Hub sign-in on this device instead. Type <strong>DELETE</strong> to confirm.</p>
+      <div class="auth-fg" style="margin-top:12px;text-align:left">
+        <label class="sr-only" for="delete-confirm-text">Type DELETE</label>
+        <input class="auth-input" type="text" id="delete-confirm-text" placeholder="DELETE" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="10"/>
+      </div>
+      <button class="auth-forgot" type="button" id="delete-use-pw-btn">I have a password</button>
+    </div>
+    <div id="delete-err" class="auth-err" style="text-align:left"></div>
+    <div style="display:flex;gap:8px;margin-top:16px;justify-content:center">
+      <button class="btn btn-sm" type="button" id="delete-cancel-btn" style="background:var(--card);color:var(--muted);border:1px solid var(--card-border)">cancel</button>
+      <button class="btn btn-sm btn-danger" type="button" id="delete-confirm-btn">delete everything</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE PASSWORD -->
+<div class="modal-overlay" id="password-modal" role="dialog" aria-modal="true" aria-labelledby="password-modal-title">
+  <form class="modal-box" id="password-form" style="max-width:380px;text-align:center" novalidate>
+    <h3 id="password-modal-title">change password</h3>
+    <p style="font-size:.75rem;color:var(--muted);margin-top:8px">You'll stay logged in here. Any other device gets logged out.</p>
+    <div class="auth-fg" style="margin-top:12px;text-align:left">
+      <label class="auth-label" for="pw-current">Current password</label>
+      <input class="auth-input" type="password" id="pw-current" autocomplete="current-password" minlength="10" maxlength="200" required/>
+    </div>
+    <div class="auth-fg" style="margin-top:10px;text-align:left">
+      <label class="auth-label" for="pw-new">New password (10 or more characters)</label>
+      <input class="auth-input" type="password" id="pw-new" autocomplete="new-password" minlength="10" maxlength="200" required/>
+    </div>
+    <div id="pw-err" class="auth-err" style="text-align:left" role="alert"></div>
+    <div style="display:flex;gap:8px;margin-top:16px;justify-content:center">
+      <button class="btn btn-sm" type="button" id="pw-cancel-btn" style="background:var(--card);color:var(--muted);border:1px solid var(--card-border)">cancel</button>
+      <button class="btn btn-sm" type="submit" id="pw-save-btn">save new password</button>
+    </div>
+  </form>
+</div>
+
+<!-- CONFIRM (styled replacement for native confirm on destructive actions) -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal-box" style="max-width:340px;text-align:center">
+    <h3 id="confirm-title">dig up this grave?</h3>
+    <p id="confirm-msg">its savings history goes with it.</p>
+    <div style="display:flex;gap:8px;margin-top:16px;justify-content:center">
+      <button class="btn btn-sm" type="button" id="confirm-cancel-btn" style="background:var(--card);color:var(--muted);border:1px solid var(--card-border)">leave it be</button>
+      <button class="btn btn-sm btn-danger" type="button" id="confirm-ok-btn">dig it up</button>
+    </div>
+  </div>
+</div>
+
+<!-- HELP PANEL: how the app works. Re-openable forever from the ? in the header. -->
+<div id="help-modal" class="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-modal-title">
+  <div class="help-backdrop" data-action="close-help"></div>
+  <div class="help-card">
+    <button type="button" class="help-x" data-action="close-help" aria-label="Close">&times;</button>
+    <div class="help-body">
+      <h2 id="help-modal-title">How Subscription Graveyard works</h2>
+      <p class="help-sub">The whole app in two minutes.</p>
+
+      <h3>The big picture</h3>
+      <p>You cancel a subscription. You bury it here. The app counts what it's saved you and keeps
+      counting every day it stays dead. Canceling stops being a chore and starts being a score.</p>
+
+      <h3>What each tab is for</h3>
+      <ul>
+        <li><b>Graveyard</b> is everything you've canceled, one tombstone each.</li>
+        <li><b>Last Rites</b> is the waiting room for subs you haven't canceled yet.</li>
+        <li><b>Stats</b> is your monthly savings and your total.</li>
+        <li><b>Bury</b> is the form that turns a canceled sub into a tombstone.</li>
+        <li><b>Renewal Alerts</b> warns you before an active sub bills. That one's Pro.</li>
+      </ul>
+
+      <h3>Burying one</h3>
+      <p>Name, monthly cost, category. That's all that's required. Set the real date you canceled and
+      the savings count from then, not from today.</p>
+      <p>Nothing here touches your bank. You type in what you canceled yourself.</p>
+
+      <h3>The two numbers</h3>
+      <div class="helprow"><span class="hchip c-green">Monthly</span><span>What you've stopped paying every month.</span></div>
+      <div class="helprow"><span class="hchip c-amber">Total saved</span><span>Everything the graveyard has saved since each burial. Only grows.</span></div>
+      <p>Your rank comes from the monthly number: Ghost, then Mourner at $50, Gravedigger at $100,
+      Undertaker at $200, Grim Reaper at $500.</p>
+
+      <h3>Just starting?</h3>
+      <ul>
+        <li>Bury one subscription you already canceled. Anything from the past year still counts.</li>
+        <li>Put two into Last Rites, the ones you keep meaning to deal with.</li>
+        <li>Check Stats. The monthly number is usually what makes the rest happen.</li>
+      </ul>
+
+      <h3>Free and Pro</h3>
+      <p data-pro-off>Free covers 5 burials and 5 Last Rites, with every counter, rank and stat. Pro, with
+      no caps and renewal alerts, is on the hosted version at subscriptiongraveyard.app.</p>
+      <p data-pro-on hidden>Free covers 5 burials and 5 Last Rites, with every counter, rank and stat. Pro removes both
+      caps and adds renewal alerts with the negotiation script.</p>
+
+      <p>Want the long version with pictures?
+      <a href="/guide" target="_blank" rel="noopener">Read the full guide</a>. It opens in a new tab
+      so you don't lose your place here.</p>
+    </div>
+    <div class="help-foot">
+      <button type="button" class="help-done" data-action="close-help">Got it</button>
+      <button type="button" class="help-tour" data-action="start-tour">Show me around</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEGOTIATION SCRIPT (shown from negotiate-mode watchlist cards) -->
+<div class="modal-overlay" id="negotiate-modal">
+  <div class="modal-box" style="max-width:420px">
+    <h3 id="negotiate-title">time to make them beg</h3>
+    <p style="color:var(--muted);font-size:.85rem;margin:4px 0 12px" id="negotiate-sub"></p>
+    <ol style="margin:0;padding-left:20px;font-size:.85rem;line-height:1.8;text-align:left">
+      <li>Contact support and ask for the <strong>retention or cancellation department</strong>.</li>
+      <li>Say: "My renewal is coming up and I'm planning to cancel. Are there any offers that would change my mind?"</li>
+      <li>Mention their new-customer promo and ask for it as a loyal customer.</li>
+      <li>Silence is fine. Let them fill it with a better offer.</li>
+      <li>No deal? Follow through. The graveyard has room.</li>
+    </ol>
+    <div style="display:flex;justify-content:center;margin-top:16px">
+      <button class="btn btn-sm btn-amber" type="button" data-action="close-negotiate-modal">got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- Unified Pro-required modal — populated + shown by showProRequired() in app.js -->
+<div id="pro-required-modal" class="pro-required-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="pro-required-title">
+  <div class="pro-required-backdrop" data-action="close-pro-modal"></div>
+  <div class="pro-required-card">
+    <div class="pro-required-badge">PRO</div>
+    <h2 class="pro-required-title" id="pro-required-title">Pro feature</h2>
+    <p class="pro-required-desc" id="pro-required-desc">This feature is part of Pro.</p>
+    <p class="pro-required-price" id="pro-required-price" hidden></p>
+    <div class="pro-required-actions">
+      <button type="button" class="pro-required-cancel" data-action="close-pro-modal">Maybe later</button>
+      <a class="pro-required-cta" id="pro-required-cta" href="#" target="_blank" rel="noopener">Go Pro</a>
+    </div>
+  </div>
+</div>
+<script src="/app.js?v=20261104b" defer></script>
+<script src="/footer-year.js" defer></script>
+<!-- feedback-widget.js is lazy-loaded by app.js after login (logged-in users only) -->
+</body>
+</html>

@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2026 the Subscription Graveyard authors. See LICENSE.
+# Subscription Graveyard: Cloudflare Worker + D1. See README.md for setup.
+name = "subscription-graveyard"
+main = "src/worker.js"
+workers_dev = true
+compatibility_date = "2025-04-01"
+
+# Using your own domain? Uncomment and change:
+# routes = [ { pattern = "example.com", custom_domain = true } ]
+
+assets = { directory = "./public", binding = "ASSETS", not_found_handling = "404-page", run_worker_first = true }
+
+[[d1_databases]]
+binding = "DB"
+database_name = "subscription-graveyard"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"   # from: npx wrangler d1 create subscription-graveyard
+
+[observability]
+enabled = true
+
+# Daily 14:00 UTC: renewal warnings + purge of expired rate-limit rows and old tokens.
+[triggers]
+crons = ["0 14 * * *"]
+
+[vars]
+# The app's name in alert and feedback webhook messages.
+APP_NAME = "Subscription Graveyard"
+APP_URL = "https://subscription-graveyard.YOUR-SUBDOMAIN.workers.dev"
+FROM_EMAIL = "Subscription Graveyard <noreply@example.com>"
+# Optional extras (blank = off):
+ALERT_WEBHOOK_URL = ""
+SIGNUP_WEBHOOK_URL = ""
+FEEDBACK_WEBHOOK_URL = ""
+# Optional Pro hub hookup. Blank = everyone is on the free plan (caps at the top of src/worker.js).
+PRO_LOOKUP_URL = ""
+PRO_REFRESH_URL = ""
+# With a hub connected (HUB_JWT_SECRET set): where Go Pro sends people. Blank hides Go Pro.
+UPGRADE_URL = ""
+# Optional price line in the Pro popup, e.g. "$5 a month". Blank shows no price.
+PRO_PRICE_TEXT = ""
+
+# Secrets: set each with `npx wrangler secret put NAME`. See .dev.vars.example.
+# Required: JWT_SECRET, RESEND_API_KEY
+# Optional: ALERT_TOKEN, SIGNUP_WEBHOOK_SECRET, HUB_JWT_SECRET, HUB_LOOKUP_SECRET, RECAP_SERVICE_SECRET
+# (the three hub secrets need 32+ characters each, or they count as not set)

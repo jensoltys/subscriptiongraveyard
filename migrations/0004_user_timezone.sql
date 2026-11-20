@@ -1,0 +1,12 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
+-- Copyright (C) 2026 the Subscription Graveyard authors. See LICENSE.
+-- Renewal warnings were scheduled off a UTC clock. The cron fires at 14:00 UTC,
+-- which is still "today" for the Americas, Europe and Asia through Japan — but
+-- is already tomorrow at UTC+10 and east (Sydney, Auckland, Fiji). Those users
+-- got their warning a day late, and a "1 day before" setting could land ON the
+-- renewal day, too late to cancel, which defeats the whole Pro feature.
+--
+-- Nullable on purpose: existing rows keep NULL and the cron falls back to UTC,
+-- which is what they get today, so nothing changes for anyone until their
+-- browser reports a zone. Backfilled silently on the next /api/profile call.
+ALTER TABLE users ADD COLUMN timezone TEXT;

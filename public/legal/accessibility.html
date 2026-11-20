@@ -1,0 +1,119 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: AGPL-3.0-only | Copyright (C) 2026 the Subscription Graveyard authors. See LICENSE. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Accessibility Statement &middot; Subscription Graveyard</title>
+<meta name="description" content="Subscription Graveyard accessibility commitment, WCAG 2.1 AA conformance, and how to report a barrier. Operated by YOUR COMPANY NAME."/>
+<meta name="robots" content="index,follow"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><rect x='4' y='4' width='72' height='72' rx='20' fill='%23FF6B57'/><path d='M24 62V36c0-9 7-16 16-16s16 7 16 16v26z' fill='%23FFF4EF'/><path d='M46 36.5c0-3-2.7-5-6-5s-6 1.8-6 4.4c0 2.7 2.6 3.8 6 4.6 3.4.8 6 1.9 6 4.6 0 2.6-2.7 4.4-6 4.4s-6-2-6-5' stroke='%233A0D07' stroke-width='3.4' stroke-linecap='round' fill='none'/><path d='M40 27v27' stroke='%233A0D07' stroke-width='3.4' stroke-linecap='round'/><rect x='16' y='60' width='48' height='7' rx='3.5' fill='%236EDBA8'/></svg>"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#141113;--bg2:#1C1719;
+  --primary:#FF6B57;--primary-d:#E5533F;--primary-ink:#2A0905;--primary-glow:rgba(255,107,87,0.25);
+  --money:#6EDBA8;--money-2:#A6EDCB;--money-glow:rgba(110,219,168,0.3);
+  --accent:#E9DFC9;--lamp:#F2B45A;--reaper:#D63A4A;
+  --text:#F4EDE8;--muted:#B4A7A6;
+  --card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --blood:#FF8F80;
+  --font-head:'Bricolage Grotesque','Avenir Next',system-ui,sans-serif;
+  --font-body:'Figtree','Avenir Next',system-ui,sans-serif;
+}
+button,input,select,textarea{font-family:inherit}
+
+*{margin:0;padding:0;box-sizing:border-box}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px;border-radius:4px}
+html,body{overflow-x:hidden}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem}
+.wrap{max-width:780px;margin:0 auto;background:var(--card);border:1px solid var(--card-border);border-radius:18px;padding:2rem 1.75rem}
+h1{font-family:var(--font-head);font-weight:700;font-size:2rem;color:var(--primary);margin-bottom:.25rem;line-height:1.3;padding-bottom:4px}
+h2{font-family:var(--font-head);font-weight:700;font-size:1.15rem;color:var(--primary);margin:1.6rem 0 .5rem}
+p,li{font-size:.95rem;line-height:1.7;color:var(--text);margin-bottom:.6rem}
+ul{margin:0 0 .8rem 1.25rem}
+a{color:var(--primary);text-decoration:underline}
+a:hover{color:var(--primary-d)}
+.muted{color:var(--muted);font-size:.85rem}
+.entity{background:rgba(110,219,168,0.06);border:1px solid rgba(110,219,168,0.18);border-radius:12px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem}
+.sg-brand{display:flex;width:max-content;align-items:center;gap:.42em;text-decoration:none;margin-bottom:1rem}
+.sg-brand:hover{text-decoration:none}
+.sg-brand svg{display:block;flex:none}
+.sg-word{font-family:var(--font-head);font-weight:700;font-size:1rem;line-height:1;display:inline-flex;align-items:baseline;gap:.28em;white-space:nowrap}
+.sg-word-ink{color:var(--text)}
+.sg-word-pop{position:relative;display:inline-block;color:var(--primary)}
+.sg-swoosh{position:absolute;left:0;bottom:-.22em;width:100%;height:.19em;overflow:visible}
+.foot-links{margin-top:2rem}
+.back{display:inline-block;margin-bottom:1.25rem;color:var(--muted);font-size:.85rem}
+code{background:rgba(110,219,168,0.08);padding:1px 5px;border-radius:4px;font-size:.85em}
+</style>
+</head>
+<body>
+<div class="wrap" role="main">
+<a class="sg-brand" href="/" aria-label="Subscription Graveyard home"><svg class="sg-mark" width="26" height="26" viewBox="0 0 80 80" aria-hidden="true" focusable="false"><rect x="4" y="4" width="72" height="72" rx="20" fill="#FF6B57"/><path d="M24 62V36c0-9 7-16 16-16s16 7 16 16v26z" fill="#FFF4EF"/><path d="M46 36.5c0-3-2.7-5-6-5s-6 1.8-6 4.4c0 2.7 2.6 3.8 6 4.6 3.4.8 6 1.9 6 4.6 0 2.6-2.7 4.4-6 4.4s-6-2-6-5" stroke="#3A0D07" stroke-width="3.4" stroke-linecap="round" fill="none"/><path d="M40 27v27" stroke="#3A0D07" stroke-width="3.4" stroke-linecap="round"/><rect x="16" y="60" width="48" height="7" rx="3.5" fill="#6EDBA8"/></svg><span class="sg-word"><span class="sg-word-ink">Subscription</span><span class="sg-word-pop">Graveyard<svg class="sg-swoosh" viewBox="0 0 92 14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M4 9C24 4 60 4 88 8" stroke="#E9DFC9" stroke-width="6" stroke-linecap="round" fill="none"/></svg></span></span></a>
+<a class="back" href="/">&larr; Back to Subscription Graveyard</a>
+<h1>Accessibility Statement</h1>
+<p class="muted">Last updated: July 4, 2026</p>
+
+<p>Subscription Graveyard is built and operated by <strong>YOUR COMPANY NAME</strong>. We believe a savings tracker should work for everyone, including people who use screen readers, get around by keyboard, rely on high-contrast modes, or otherwise depend on assistive technology. This statement explains where we stand, where we're working, and how to tell us about something we missed.</p>
+
+<h2>Our standard</h2>
+<p>We aim for <strong>Web Content Accessibility Guidelines (WCAG) 2.1 Level AA</strong> conformance across Subscription Graveyard. WCAG 2.1 AA is the level cited in most US, EU, and UK accessibility laws and the level courts use to evaluate website accessibility claims.</p>
+
+<h2>What this means in practice</h2>
+<ul>
+  <li><strong>Keyboard navigation:</strong> every interactive element (links, buttons, tabs, form fields) is reachable and operable using only a keyboard. Focus is always visible, and Escape closes open modals.</li>
+  <li><strong>Color contrast:</strong> body text meets a minimum 4.5:1 contrast ratio against its background. Large text and interactive controls meet at least 3:1.</li>
+  <li><strong>Form labels:</strong> every input has a label associated with it programmatically, so screen readers announce the right field.</li>
+  <li><strong>Semantic structure:</strong> headings are in order, landmarks are used, and page regions are identifiable.</li>
+  <li><strong>Alt text:</strong> meaningful images carry descriptive <code>alt</code> attributes; decorative artwork (tombstone art, ambient critters) is hidden from screen readers with <code>aria-hidden</code>.</li>
+  <li><strong>No timed traps:</strong> there are no session timeouts that boot users without warning, and no modal dialogs that capture focus without an escape.</li>
+  <li><strong>Resize and zoom:</strong> the layout reflows cleanly up to 200% zoom without horizontal scrolling on mobile.</li>
+  <li><strong>Color is not the only signal:</strong> savings figures are plain text alongside the graveyard art, errors include text (not just red borders), and required fields are labeled.</li>
+</ul>
+
+<h2>What we use to verify it</h2>
+<ul>
+  <li>Automated checks with <a href="https://github.com/dequelabs/axe-core" target="_blank" rel="noopener noreferrer">axe-core</a> and Lighthouse on the public pages. (EDIT THIS LINE to say how often you run them.)</li>
+  <li>Manual keyboard-only navigation testing on signup, login, password reset, burying a subscription, and account deletion.</li>
+  <li>Spot-checks with macOS VoiceOver and NVDA on Windows for key flows.</li>
+</ul>
+
+<h2>Known limitations</h2>
+<p>We try to be transparent about gaps we know exist:</p>
+<ul>
+  <li><strong>Ambient animations:</strong> occasional critters (a bat, a ghost, a raven) fly across the graveyard, and tombstones age visually over time. These are decorative, are hidden from assistive technology, and are disabled entirely when <code>prefers-reduced-motion</code> is set. If any animation creates a barrier for you, please tell us.</li>
+  <li><strong>Graveyard art:</strong> the tombstone scene is decorative; every figure it represents (per-subscription savings, monthly and total tallies) is also available as plain text in the app.</li>
+</ul>
+
+<h2>Tell us if something is broken</h2>
+<p>If you hit a barrier, anything that prevents you from completing a task on Subscription Graveyard, please tell us. We treat accessibility reports the same way we treat security reports: as a priority, with a real human reply.</p>
+
+<p><strong>Email:</strong> <a href="mailto:support@example.com">support@example.com</a><br>
+<strong>Subject line:</strong> "Accessibility barrier: Subscription Graveyard"<br>
+<strong>What to include (whatever you have):</strong> the URL, the device + assistive technology you're using, what you were trying to do, and what happened.</p>
+
+<p>We'll acknowledge within 2 business days and propose a fix or workaround within 10 business days.</p>
+
+<h2>Formal complaints</h2>
+<p>If we have not resolved your concern, you may file a complaint with:</p>
+<ul>
+  <li><strong>US:</strong> the Department of Justice Civil Rights Division at <a href="https://civilrights.justice.gov" target="_blank" rel="noopener noreferrer">civilrights.justice.gov</a>.</li>
+  <li><strong>EU residents:</strong> your national equality body or data protection authority, see <a href="https://www.edpb.europa.eu" target="_blank" rel="noopener noreferrer">edpb.europa.eu</a>.</li>
+  <li><strong>UK:</strong> the <a href="https://www.equalityhumanrights.com" target="_blank" rel="noopener noreferrer">Equality and Human Rights Commission</a>.</li>
+</ul>
+
+<h2>Contact</h2>
+<div class="entity">
+<strong>YOUR COMPANY NAME</strong><br>
+YOUR BUSINESS ADDRESS<br>
+United States<br>
+<a href="mailto:support@example.com">support@example.com</a>
+</div>
+
+<p class="foot-links"><a href="/legal/privacy">Privacy</a> &middot; <a href="/legal/terms">Terms of Service</a> &middot; <a href="/legal/accessibility">Accessibility</a> &middot; <a href="/legal/do-not-sell">Do Not Sell My Info</a> &middot; <a href="https://github.com/jensoltys/subscriptiongraveyard" target="_blank" rel="noopener noreferrer">Open source</a></p>
+<p class="muted" style="font-size:.8rem">Contact <a href="mailto:support@example.com">support@example.com</a> &middot; &copy; <span class="jbi-year">2026</span> YOUR COMPANY NAME &middot; YOUR BUSINESS ADDRESS</p>
+<script src="/footer-year.js" defer></script>
+</div>
+</body>
+</html>

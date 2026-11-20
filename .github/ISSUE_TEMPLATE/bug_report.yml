@@ -1,0 +1,28 @@
+name: Bug report
+description: Something in Subscription Graveyard doesn't work the way it should
+labels: [bug]
+body:
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where did it happen?
+      options:
+        - subscriptiongraveyard.app
+        - My own copy
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to make it happen
+      placeholder: "1. Open ...\n2. Tap ...\n3. See ..."
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device

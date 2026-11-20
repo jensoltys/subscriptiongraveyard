@@ -1,0 +1,32 @@
+{
+  "name": "subscription-graveyard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Subscription Graveyard: bury the subscriptions you canceled and watch the savings add up. Cloudflare Worker + D1.",
+  "license": "AGPL-3.0-only",
+  "author": "Jen Soltys",
+  "homepage": "https://subscriptiongraveyard.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jensoltys/subscriptiongraveyard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jensoltys/subscriptiongraveyard/issues"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "4.156.0"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:setup:local": "wrangler d1 execute subscription-graveyard --local --file schema.sql && wrangler d1 migrations apply subscription-graveyard --local",
+    "db:setup:remote": "wrangler d1 execute subscription-graveyard --remote --file schema.sql && wrangler d1 migrations apply subscription-graveyard --remote",
+    "test": "node --test --test-force-exit tests/*.test.mjs",
+    "test:security": "node scripts/test-security.mjs",
+    "predeploy": "node scripts/test-security.mjs"
+  }
+}
